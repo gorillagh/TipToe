@@ -1,0 +1,38 @@
+.Toastify__toast--success {
+  background: rgb(17, 135, 113) !important;
+}
+
+/* Form input wave effect */
+.form-group {
+  position: relative;
+}
+
+.form-group .label {
+  color: #d0a37d;
+  text-align: left !important;
+  font-size: 1rem;
+  position: absolute;
+  top: 5px;
+  left: 0;
+  z-index: -1;
+}
+p {
+  color: #d0a37d;
+}
+
+.form-group .label span {
+  display: inline-block;
+  font-size: 1.225rem;
+  min-width: 0.3125rem;
+  transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.form-group input:focus + .label span,
+.form-group input:valid + .label span,
+.form-group select:focus + .label span,
+.form-group select:valid + .label span {
+  font-size: 1rem;
+  transform: translateY(-30px);
+}
+/**********************/
+/* .form-control .label */
