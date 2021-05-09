@@ -64,8 +64,8 @@ const CreateProduct = () => {
     setValues({ ...values, subcategories: [], category: e.target.value })
     getSubCategories(e.target.value).then((res) => {
       setSubCategories(res.data)
-      setDisableCategories(false)
     })
+    setDisableCategories(false)
   }
 
   const handleSubmit = async (e) => {

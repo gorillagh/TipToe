@@ -30,21 +30,21 @@ const AllProducts = () => {
   }
 
   const handleDelete = (slug, title) => {
-    if (window.confirm(`Are you sure you want to delete ${title}?`)) {
-      // console.log('send delete request', slug)
+    // if (window.confirm(`Are you sure you want to delete ${title}?`)) {
+    // console.log('send delete request', slug)
 
-      deleteProduct(user.token, slug)
-        .then((res) => {
-          loadProducts()
-          toast.error(`${res.data.title} Deleted`)
-        })
-        .catch((error) => {
-          if (error.response.status === 4000) {
-            toast.error(error.response.data)
-            console.log(error)
-          }
-        })
-    }
+    deleteProduct(user.token, slug)
+      .then((res) => {
+        loadProducts()
+        toast.error(`${res.data.title} Deleted`)
+      })
+      .catch((error) => {
+        if (error.response.status === 4000) {
+          toast.error(error.response.data)
+          console.log(error)
+        }
+      })
+    // }
   }
 
   return (

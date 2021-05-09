@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import Picture from '../../images/favicon-32x32.png'
 
+import { Popconfirm } from 'antd'
+
 const AdminProductCard = ({ product, handleDelete }) => {
   const { Meta } = Card
   const { title, images, description, slug, price } = product
@@ -18,27 +20,30 @@ const AdminProductCard = ({ product, handleDelete }) => {
         background: '#e1e5ea',
       }}
       cover={
-        <div
-          style={{
-            height: 180,
-            borderRadius: '5% 5% 0 0',
-            objectFit: 'cover',
-          }}
-        >
-          <img
+        <Link to={`/admin/product/${slug}`}>
+          <div
             style={{
-              height: '100%',
-              width: '100%',
+              height: 180,
               borderRadius: '5% 5% 0 0',
               objectFit: 'cover',
             }}
-            alt='example'
-            src={images && images.length ? images[0].url : Picture}
-          />
-          <h6 className=' text-left ml-4 py-3  '>
-            Price: <span className='text-success'>GH¢ {price}</span>
-          </h6>
-        </div>
+          >
+            <img
+              style={{
+                height: '100%',
+                width: '100%',
+                borderRadius: '5% 5% 0 0',
+                objectFit: 'cover',
+              }}
+              alt='example'
+              src={images && images.length ? images[0].url : Picture}
+            />
+
+            <h6 className='text-left ml-4 py-3'>
+              Price: <span className='text-success'>GH¢ {price}</span>
+            </h6>
+          </div>
+        </Link>
       }
       actions={[
         <Link to={`/admin/product/${slug}`}>
@@ -50,25 +55,35 @@ const AdminProductCard = ({ product, handleDelete }) => {
         </Link>,
 
         <div>
-          <span
-            className='text-danger'
-            onClick={() => handleDelete(slug, title)}
+          <Popconfirm
+            title='Are you sure to delete this product?'
+            onConfirm={() => handleDelete(slug, title)}
+            // onCancel={cancel}
+            okText='Yes'
+            cancelText='No'
           >
-            Delete <DeleteOutlined key='delete' />
-          </span>
+            <span
+              className='text-danger'
+              // onClick={() => handleDelete(slug, title)}
+            >
+              Delete <DeleteOutlined key='delete' />
+            </span>
+          </Popconfirm>
         </div>,
       ]}
     >
-      <Meta
-        style={{
-          height: 110,
-          marginTop: '25px',
-          fontFamily: 'Ubuntu',
-          fontWeight: 'normal',
-        }}
-        title={title}
-        description={`${description && description.substring(0, 50)}...`}
-      />
+      <Link to={`/admin/product/${slug}`}>
+        <Meta
+          style={{
+            height: 110,
+            marginTop: '25px',
+            fontFamily: 'Ubuntu',
+            fontWeight: 'normal',
+          }}
+          title={title}
+          description={`${description && description.substring(0, 50)}...`}
+        />
+      </Link>
     </Card>
   )
 }

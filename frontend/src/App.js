@@ -13,6 +13,7 @@ import RegisterComplete from './pages/auth/RegisterComplete'
 import ForgotPassword from './pages/auth/ForgotPassword'
 import { Switch, Route } from 'react-router-dom'
 import Header from './components/Navbar/Header'
+import Footer from './components/Footer'
 import UserRoute from './components/routesComponents/UserRoute'
 import UserHistory from './pages/User/UserHistory'
 import UserPassword from './pages/User/UserPassword'
@@ -73,6 +74,7 @@ function App() {
           component={UpdateProduct}
         />
       </Switch>
+      <Footer />
     </>
   )
 }

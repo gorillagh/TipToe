@@ -9,10 +9,14 @@ const UpdateProductForm = ({
   values,
   loading,
   icon,
-  // handleCategoryChange,
-  // subCategories,
-  // disableSubCategories,
+  handleCategoryChange,
+  subCategories,
+  disableSubCategories,
   setValues,
+  categories,
+  arrayOfSubCategories,
+  setArrayOfSubCategories,
+  selectedCategory,
 }) => {
   const {
     title,
@@ -25,7 +29,6 @@ const UpdateProductForm = ({
     color,
     brand,
     brands,
-    categories,
     category,
     subcategories,
     images,
@@ -154,12 +157,11 @@ const UpdateProductForm = ({
       <div className='form-group mt-3'>
         <label className='text-muted'>Category</label>
         <select
-          value={category}
           className='custom-select'
           name='category'
-          // onChange={handleCategoryChange}
+          onChange={handleCategoryChange}
+          value={selectedCategory ? selectedCategory : category._id}
         >
-          <option>--Select One--</option>
           {categories.length &&
             categories.map((c) => (
               <option key={c._id} value={c._id}>
@@ -169,14 +171,14 @@ const UpdateProductForm = ({
         </select>
       </div>
 
-      {/* <div className='form-group mt-4'>
+      <div className='form-group mt-4'>
         <label className='text-muted'>Sub Categories</label>
         <Select
           mode='multiple'
           allowClear
           style={{ width: '100%' }}
-          value={subcategories}
-          onChange={(value) => setValues({ ...values, subcategories: value })}
+          value={arrayOfSubCategories}
+          onChange={(value) => setArrayOfSubCategories(value)}
           disabled={disableSubCategories || category === '--Select One--'}
           placeholder='Select Sub Categories'
         >
@@ -187,7 +189,7 @@ const UpdateProductForm = ({
               </Option>
             ))}
         </Select>
-      </div> */}
+      </div>
 
       <div className='form-group mt-5'>
         <Button

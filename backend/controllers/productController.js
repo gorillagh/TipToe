@@ -54,3 +54,21 @@ exports.getProduct = async (req, res) => {
     res.status(400).json({ message: error.message })
   }
 }
+
+exports.update = async (req, res) => {
+  try {
+    if (req.body.title) {
+      req.body.slug = slugify(req.body.title)
+    }
+    const updatedProduct = await Product.findOneAndUpdate(
+      { slug: req.params.slug },
+      req.body,
+      { new: true }
+    ).exec()
+    console.log(updatedProduct)
+    res.json(updatedProduct)
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({ message: error.message })
+  }
+}
