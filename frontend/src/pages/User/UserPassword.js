@@ -93,7 +93,7 @@ const UserPassword = ({ history }) => {
             autoComplete='off'
           />
           <small id='emailHelp' className='form-text text-muted'>
-            Password must atleast 6 characters.
+            Password must be 6 characters or more
           </small>
         </div>
 
@@ -109,7 +109,7 @@ const UserPassword = ({ history }) => {
             autoComplete='off'
           />
           <small id='emailHelp' className='form-text text-muted'>
-            Password must much the above !
+            Password must match the above!
           </small>
         </div>
 

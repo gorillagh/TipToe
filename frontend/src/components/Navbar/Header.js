@@ -40,21 +40,27 @@ function Header() {
       onClick={handleClick}
       selectedKeys={[current]}
       mode='horizontal'
-      className='bg-light'
+      className='bg-white'
     >
       <Item key='home' icon={<HomeOutlined />}>
-        <Link to='/'>TipToe</Link>
+        <Link to='/'>
+          <span>TipToe</span>
+        </Link>
       </Item>
 
       {!user && (
         <Item key='login' icon={<UserSwitchOutlined />} className='float-right'>
-          <Link to='/login'>Login</Link>
+          <Link to='/login'>
+            <span>Login</span>
+          </Link>
         </Item>
       )}
 
       {!user && (
         <Item key='register' icon={<UserAddOutlined />} className='float-right'>
-          <Link to='/register'>Register</Link>
+          <Link to='/register'>
+            <span>Register</span>
+          </Link>
         </Item>
       )}
 

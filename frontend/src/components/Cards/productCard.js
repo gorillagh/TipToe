@@ -1,12 +1,10 @@
 import React from 'react'
 import { Card } from 'antd'
 import { Link } from 'react-router-dom'
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import { EyeOutlined, ShoppingCartOutlined } from '@ant-design/icons'
 import Picture from '../../images/favicon-32x32.png'
 
-import { Popconfirm } from 'antd'
-
-const AdminProductCard = ({ product, handleDelete }) => {
+const ProductCard = ({ product }) => {
   const { Meta } = Card
   const { title, images, description, slug, price } = product
 
@@ -15,12 +13,12 @@ const AdminProductCard = ({ product, handleDelete }) => {
       // className='mr-2 mb-3'
       hoverable
       style={{
-        width: 180,
+        width: 230,
         borderRadius: '5% 5% 0 0',
         background: '#e1e5ea',
       }}
       cover={
-        <Link to={`/admin/product/${slug}`}>
+        <Link to={`/product/${slug}`}>
           <div
             style={{
               height: 180,
@@ -46,33 +44,21 @@ const AdminProductCard = ({ product, handleDelete }) => {
         </Link>
       }
       actions={[
-        <Link to={`/admin/product/${slug}`}>
+        <Link to={`/product/${slug}`}>
           <div>
             <span className='text-primary'>
-              Edit <EditOutlined key='edit' />
+              <EyeOutlined key='view' /> <br /> View
             </span>
           </div>
         </Link>,
-
         <div>
-          <Popconfirm
-            title={`Are you sure to delete ${title}?`}
-            onConfirm={() => handleDelete(slug, title)}
-            // onCancel={cancel}
-            okText='Yes'
-            cancelText='No'
-          >
-            <span
-              className='text-danger'
-              // onClick={() => handleDelete(slug, title)}
-            >
-              Delete <DeleteOutlined key='delete' />
-            </span>
-          </Popconfirm>
+          <span className='text-danger'>
+            <ShoppingCartOutlined key='cart' /> <br /> Add to Cart
+          </span>
         </div>,
       ]}
     >
-      <Link to={`/admin/product/${slug}`}>
+      <Link to={`/product/${slug}`}>
         <Meta
           style={{
             height: 110,
@@ -88,4 +74,4 @@ const AdminProductCard = ({ product, handleDelete }) => {
   )
 }
 
-export default AdminProductCard
+export default ProductCard

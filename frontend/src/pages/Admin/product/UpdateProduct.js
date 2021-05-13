@@ -123,7 +123,7 @@ const UpdateProduct = ({ match, history }) => {
       })
       .catch((error) => {
         setLoading(false)
-        console.log(error)
+        console.log('Update Product Error', error)
         toast.error(error.response.data.message)
       })
   }
