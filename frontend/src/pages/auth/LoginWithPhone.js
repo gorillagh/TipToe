@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { auth } from '../../firebase'
 import firebase from 'firebase/app'
 import 'firebase/auth'
@@ -7,12 +7,22 @@ import 'firebase/auth'
 import { PhoneOutlined, LoginOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
 import { toast } from 'react-toastify'
+import { createOrUpdateUser } from '../../serverFunctions/auth'
 
 const LoginWithPhone = ({ history }) => {
   const [number, setNumber] = useState('')
   const [code, setCode] = useState('')
   const [loading, setLoading] = useState('')
+  const dispatch = useDispatch()
   const { user } = useSelector((state) => ({ ...state }))
+
+  const roleBasedRedirect = (user) => {
+    if (user.role === 'admin') {
+      history.push('/admin/dashboard')
+    } else {
+      history.push('/user/history')
+    }
+  }
 
   //Redirect user to home if they are already logged in
   useEffect(() => {
@@ -26,37 +36,21 @@ const LoginWithPhone = ({ history }) => {
   const getNumber = (e) => {
     setNumber(e.target.value)
   }
-  //Get code from input field
-  const getCode = (e) => {
-    setCode(e.target.value)
-  }
 
-  // // auth.languageCode = 'it'
-  // // To apply the default browser preference instead of explicitly setting it.
-  setTimeout(() => {
-    // const recaptchaVerifier = new firebase.auth.RecaptchaVerifier('signIn', {
-    //   size: 'invisible',
-    //   callback: (response) => {
-    //     // reCAPTCHA solved, allow signInWithPhoneNumber.
-    //     handleSubmit()
-    //   },
-    // })
+  const handleSubmit = async (e) => {
+    e.preventDefault()
     window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
       'recaptcha-container'
     )
-  }, 2000)
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
     setLoading(true)
     const appVerifier = window.recaptchaVerifier
     auth
       .signInWithPhoneNumber(number, appVerifier)
-      .then((confirmationResult) => {
+      .then((res) => {
         toast.success('Verification code sent')
         // user in with confirmationResult.confirm(code).
-        window.confirmationResult = confirmationResult
-        console.log(confirmationResult)
+        window.confirmationResult = res
+        console.log(res)
         // history.push('/login/phone/complete')
         document.getElementById('form1').style.display = 'none'
         document.getElementById('form2').style.display = 'block'
@@ -69,18 +63,46 @@ const LoginWithPhone = ({ history }) => {
       })
   }
 
-  const handleSubmitComplete = (e) => {
-    e.preventDefault()
+  const handleSubmitComplete = async () => {
     setLoading(true)
     window.confirmationResult
       .confirm(code)
-      .then((result) => {
+      .then(async (result) => {
         setLoading(false)
         // User signed in successfully.
-        toast.success('User signed in successfully')
         const user = result.user
-        console.log(user)
-        history.push('/')
+        const idTokenResult = await user.getIdTokenResult()
+
+        //Sent token to backend
+        createOrUpdateUser(idTokenResult.token)
+          .then((res) => {
+            console.log(res.data)
+            // send response data to redux store
+            dispatch({
+              type: 'LOGGED_IN_USER',
+              payload: {
+                email: res.data.email,
+                name: res.data.name,
+                role: res.data.role,
+                picture: res.data.picture,
+                token: idTokenResult.token,
+                _id: res.data._id,
+              },
+            })
+            toast.success(
+              `${
+                res.data.name === 'User'
+                  ? 'Hello there! Welcome'
+                  : user.email.split('@')[0]
+              }`
+            )
+            roleBasedRedirect(res.data)
+          })
+          .catch((err) => {
+            if (err.status === 401) {
+              toast.error('Your session has expired. Please try log in again!')
+            } else console.log('Error: ', err)
+          })
       })
       .catch((error) => {
         // User couldn't sign in (bad verification code?)
@@ -95,11 +117,11 @@ const LoginWithPhone = ({ history }) => {
         <form id='form1' onSubmit={handleSubmit} className='mt-3  text-center'>
           <h3 className='text-left'>Sign In With Phone</h3>
 
-          <div className='form-group'>
+          <div className='form-group pt-0 mt-4'>
             <input
               onChange={getNumber}
               className='form-control'
-              placeholder='Enter a valid Phone number'
+              placeholder='Phone number'
               value={number}
               autoFocus
               disabled={loading}
@@ -110,7 +132,8 @@ const LoginWithPhone = ({ history }) => {
               We'll never share your number with anyone else.
             </small>
           </div>
-          <div className='form-group' id='recaptcha-container'></div>
+          <div className='form-group pt-0 mt-4' id='recaptcha-container'></div>
+
           <div className='form-group'>
             <Button
               loading={loading}
@@ -131,14 +154,14 @@ const LoginWithPhone = ({ history }) => {
 
         <form
           id='form2'
-          onSubmit={handleSubmitComplete}
+          // onSubmit={handleSubmitComplete}
           className='mt-3  text-center'
         >
           <h3 className='text-left'>Complete Sign In</h3>
 
-          <div className='form-group'>
+          <div className='form-group mt-4'>
             <input
-              onChange={getCode}
+              onChange={(e) => setCode(e.target.value)}
               className='form-control'
               placeholder='Enter verification code'
               value={code}
@@ -155,7 +178,10 @@ const LoginWithPhone = ({ history }) => {
               icon={<LoginOutlined />}
               size='large'
               block
-              onClick={handleSubmitComplete}
+              onClick={(e) => {
+                e.preventDefault()
+                handleSubmitComplete()
+              }}
               className='mt-3'
               disabled={!code || loading}
             >

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import AdminNav from '../../../components/Navbar/AdminNav'
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
@@ -21,23 +21,23 @@ const UpdateSubCategory = ({ history, match }) => {
 
   const { user } = useSelector((state) => ({ ...state }))
 
-  useEffect(() => {
-    loadSubCategory()
-    loadCategories()
-  }, [])
-
-  const loadSubCategory = async () => {
+  const loadSubCategory = useCallback(async () => {
     const SubCategory = await viewSubCategory(match.params.slug)
     setName(SubCategory.data.name)
     setOldName(SubCategory.data.name)
     setParent(SubCategory.data.parent)
-  }
+  }, [match.params.slug])
 
   const loadCategories = async () => {
     const Categories = await viewCategories()
     // console.log(Categories.data)
     setCategories(Categories.data)
   }
+
+  useEffect(() => {
+    loadSubCategory()
+    loadCategories()
+  }, [loadSubCategory])
 
   const handleSubmit = async (e) => {
     e.preventDefault()

@@ -10,7 +10,7 @@ exports.create = async (req, res) => {
       slug: slugify(name),
     }).save()
     res.json(newSubCategory)
-    console.log('Sub category Added -->', newSubCategory)
+    // console.log('Sub category Added -->', newSubCategory)
   } catch (error) {
     res.status(400).json({ message: 'Create sub category Failed' })
   }
@@ -38,7 +38,7 @@ exports.update = async (req, res) => {
       { new: true }
     ).exec()
     res.json(updatedSubCategory)
-    console.log('Sub category updated --> ', updatedSubCategory)
+    // console.log('Sub category updated --> ', updatedSubCategory)
   } catch (error) {
     res.status(403).json({ message: 'Failed to update sub category' })
   }
@@ -49,7 +49,7 @@ exports.remove = async (req, res) => {
     const { slug } = await req.params
     slug.toLowerCase()
     const deleted = await SubCategory.findOneAndDelete({ slug }).exec()
-    console.log('Sub category deleted --> ', deleted)
+    // console.log('Sub category deleted --> ', deleted)
     res.json({
       message: 'Sub category deleted',
       SubCategory: deleted,

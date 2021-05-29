@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { SaveOutlined, LoadingOutlined } from '@ant-design/icons'
 
@@ -32,6 +32,8 @@ const initialValues = {
     'Bose',
     'Sony',
     'Thrustmaster',
+    'PlayStation',
+    'Xbox',
   ],
   brand: '--Select One--',
   sold: '',
@@ -48,12 +50,7 @@ const UpdateProduct = ({ match, history }) => {
   const [categories, setCategories] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('')
 
-  useEffect(() => {
-    loadProduct()
-    loadCategories()
-  }, [])
-
-  const loadProduct = async () => {
+  const loadProduct = useCallback(async () => {
     setLoading(true)
     await getProduct(match.params.slug)
       .then((product) => {
@@ -77,13 +74,18 @@ const UpdateProduct = ({ match, history }) => {
         setLoading(false)
         console.log(error)
       })
-  }
+  }, [])
 
   const loadCategories = async () => {
     const Categories = await viewCategories()
     // console.log(Categories.data)
     setCategories(Categories.data)
   }
+
+  useEffect(() => {
+    loadProduct()
+    loadCategories()
+  }, [loadProduct])
 
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value })

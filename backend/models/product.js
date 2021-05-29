@@ -66,6 +66,8 @@ const productSchema = new Schema(
         'Bose',
         'Sony',
         'Thrustmaster',
+        'PlayStation',
+        'Xbox',
       ],
     },
     // ratings: [

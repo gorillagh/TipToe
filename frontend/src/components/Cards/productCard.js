@@ -10,7 +10,7 @@ const ProductCard = ({ product }) => {
 
   return (
     <Card
-      // className='mr-2 mb-3'
+      className='m-auto'
       hoverable
       style={{
         width: 230,
@@ -21,7 +21,7 @@ const ProductCard = ({ product }) => {
         <Link to={`/product/${slug}`}>
           <div
             style={{
-              height: 180,
+              height: 200,
               borderRadius: '5% 5% 0 0',
               objectFit: 'cover',
             }}

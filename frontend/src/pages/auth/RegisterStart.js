@@ -82,8 +82,9 @@ function RegisterStart({ history }) {
     <form onSubmit={handleSubmit} className='mt-3  text-center'>
       <h3 className='text-left'>Sign Up</h3>
 
-      <div className='form-group'>
+      <div className='form-group pt-0 mt-4'>
         <input
+          placeholder='Email'
           onChange={getEmail}
           type='email'
           className='form-control mt-4'
@@ -91,7 +92,7 @@ function RegisterStart({ history }) {
           value={email}
           required
         />
-        <p className='label'>Email</p>
+        {/* <p className='label'>Email</p> */}
       </div>
 
       <div className='form-group'>
@@ -118,17 +119,17 @@ function RegisterStart({ history }) {
   )
 
   //This is for the wave effect on form inputs
-  const labels = document.querySelectorAll('.form-group .label')
+  // const labels = document.querySelectorAll('.form-group .label')
 
-  labels.forEach((label) => {
-    label.innerHTML = label.innerText
-      .split('')
-      .map(
-        (letter, idx) =>
-          `<span style="transition-delay:${idx * 50}ms">${letter}</span>`
-      )
-      .join('')
-  })
+  // labels.forEach((label) => {
+  //   label.innerHTML = label.innerText
+  //     .split('')
+  //     .map(
+  //       (letter, idx) =>
+  //         `<span style="transition-delay:${idx * 50}ms">${letter}</span>`
+  //     )
+  //     .join('')
+  // })
 
   return (
     <div className='container p-5'>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import AdminNav from '../../../components/Navbar/AdminNav'
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
@@ -15,15 +15,15 @@ const UpdateCategory = ({ history, match }) => {
 
   const { user } = useSelector((state) => ({ ...state }))
 
-  useEffect(() => {
-    loadCategory()
-  }, [])
-
-  const loadCategory = async () => {
+  const loadCategory = useCallback(async () => {
     const Category = await viewCategory(match.params.slug)
     setName(Category.data.name)
     setOldName(Category.data.name)
-  }
+  }, [match.params.slug])
+
+  useEffect(() => {
+    loadCategory()
+  }, [loadCategory])
 
   const handleSubmit = async (e) => {
     e.preventDefault()

@@ -42,3 +42,42 @@ export const updateProduct = async (authtoken, product, slug) => {
     }
   )
 }
+
+export const getProductList = async (
+  sort,
+  order,
+  pageNumber,
+  numberPerPage
+) => {
+  return await axios.post(`${process.env.REACT_APP_API_URL}/products`, {
+    sort,
+    order,
+    pageNumber,
+    numberPerPage,
+  })
+}
+
+export const getProductsTotalNumber = async () => {
+  return await axios.get(
+    `${process.env.REACT_APP_API_URL}/products/totalnumber`
+  )
+}
+
+export const getProductsByBrand = async (title, limit) => {
+  return await axios.post(`${process.env.REACT_APP_API_URL}/products/name`, {
+    title,
+    limit,
+  })
+}
+
+export const getProductsBycategory = async (sort, order, categories, limit) => {
+  return await axios.post(
+    `${process.env.REACT_APP_API_URL}/products/category`,
+    {
+      sort,
+      order,
+      categories,
+      limit,
+    }
+  )
+}

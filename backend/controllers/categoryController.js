@@ -10,7 +10,7 @@ exports.create = async (req, res) => {
       slug: slugify(name),
     }).save()
     res.json(newCategory)
-    console.log('Category Added -->', newCategory)
+    // console.log('Category Added -->', newCategory)
   } catch (error) {
     res.status(400).json({ message: 'Create Category Failed' })
   }
@@ -36,7 +36,7 @@ exports.update = async (req, res) => {
       { new: true }
     ).exec()
     res.json(updatedCategory)
-    console.log('Category updated --> ', updatedCategory)
+    // console.log('Category updated --> ', updatedCategory)
   } catch (error) {
     res.status(403).json({ message: 'Failed to update category' })
   }
@@ -47,7 +47,7 @@ exports.remove = async (req, res) => {
     const { slug } = await req.params
     slug.toLowerCase()
     const deleted = await Category.findOneAndDelete({ slug })
-    console.log('Category deleted --> ', deleted)
+    // console.log('Category deleted --> ', deleted)
     res.json({
       message: 'Category deleted',
       Category: deleted,
@@ -81,15 +81,17 @@ exports.read = async (req, res) => {
 
 // }
 
-exports.getSubCategories = async (req, res)=>{
-try {
-  const subCategories = await SubCategory.find({parent: req.params._id}).exec()
-  console.log(subCategories)
-  res.json(subCategories)
-} catch (error) {
-  console.log(error)
-  res.status(403).json({
+exports.getSubCategories = async (req, res) => {
+  try {
+    const subCategories = await SubCategory.find({
+      parent: req.params._id,
+    }).exec()
+    // console.log(subCategories)
+    res.json(subCategories)
+  } catch (error) {
+    console.log(error)
+    res.status(403).json({
       message: 'Could not retrieve Category',
     })
-}
+  }
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { SaveOutlined } from '@ant-design/icons'
 import AdminNav from '../../../components/Navbar/AdminNav'
@@ -32,6 +32,8 @@ const initialValues = {
     'Bose',
     'Sony',
     'Thrustmaster',
+    'PlayStation',
+    'Xbox',
   ],
   brand: '--Select One--',
   sold: '',
@@ -44,16 +46,20 @@ const CreateProduct = () => {
   const [values, setValues] = useState(initialValues)
   const [subCategories, setSubCategories] = useState([])
   const [disableSubCategories, setDisableCategories] = useState(true)
+  // const [cleanState, setCleanState] = useState({})
 
-  useEffect(() => {
-    loadCategories()
-  }, [])
-
-  const loadCategories = async () => {
+  const loadCategories = useCallback(async () => {
     const Categories = await viewCategories()
     // console.log(Categories.data)
     setValues({ ...values, categories: Categories.data })
-  }
+    // return () => {
+    //   setCleanState({})
+    // }
+  }, [])
+
+  useEffect(() => {
+    loadCategories()
+  }, [loadCategories])
 
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value })
