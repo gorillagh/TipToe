@@ -69,3 +69,7 @@ p {
   max-height: 100%;
   display: block;
 }
+
+.ant-modal-body {
+  text-align: center;
+}

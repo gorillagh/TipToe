@@ -16,6 +16,8 @@ const {
   productsTotalNumber,
   listByBrand,
   listBycategory,
+  productStar,
+  productAverageRating,
 } = require('../controllers/productController')
 
 router.post('/product/create', checkAuth, checkAdmin, create)
@@ -27,4 +29,9 @@ router.put('/product/:slug', checkAuth, checkAdmin, update)
 router.post('/products', list)
 router.post('/products/name', listByBrand)
 router.post('/products/category', listBycategory)
+
+//Rating
+router.put('/product/star/:productId', checkAuth, productStar)
+// router.get('/product/rating/:productId', productAverageRating)
+
 module.exports = router

@@ -1,4 +1,5 @@
 const Product = require('../models/product')
+const User = require('../models/user')
 const slugify = require('slugify')
 
 exports.create = async (req, res) => {
@@ -158,3 +159,68 @@ exports.listBycategory = async (req, res) => {
     res.status(400).json({ message: error.message })
   }
 }
+
+exports.productStar = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.productId).exec()
+    const user = await User.findOne({ email: req.body.email }).exec()
+    const { star } = req.body
+
+    let rObject
+    product.ratings.forEach((element) => {
+      if (element.postedBy.toString() === user._id.toString()) {
+        rObject = element
+      }
+    })
+
+    //who is updating
+    //check if currently loged in use has already added a rating
+    // const ratingObject = product.ratings.find((element) => {
+    //   element.postedBy.toString() === user._id.toString()
+    // })
+
+    //if user has not left rating yet, push it
+    if (rObject === undefined) {
+      let ratingAdded = await Product.findByIdAndUpdate(
+        product._id,
+        {
+          $push: { ratings: { star, postedBy: user._id } },
+        },
+        { new: true }
+      ).exec()
+      res.json(ratingAdded)
+    }
+
+    //Else if user has already left rating, update it
+    else {
+      const ratingUpdated = await Product.updateOne(
+        {
+          ratings: { $elemMatch: rObject },
+        },
+        { $set: { 'ratings.$.star': star } },
+        { new: true }
+      ).exec()
+      res.json(ratingUpdated)
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({ message: error.message })
+  }
+}
+
+// exports.productAverageRating = async (req, res) => {
+//   try {
+//     const product = await Product.findById(req.params.productId).exec()
+//     const { ratings } = await product
+//     let total = 0
+//     for (let i = 0; i < ratings.length; i++) {
+//       total += Number(ratings[i].star)
+//     }
+//     const averageRating = total / ratings.length
+//     console.log('Average rating=========>', averageRating)
+//     res.json(averageRating)
+//   } catch (error) {
+//     console.log(error)
+//     res.status(400).json({ message: error.message })
+//   }
+// }

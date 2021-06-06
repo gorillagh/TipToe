@@ -81,3 +81,24 @@ export const getProductsBycategory = async (sort, order, categories, limit) => {
     }
   )
 }
+
+export const updateProductRating = async (star, _id, email, authtoken) => {
+  return await axios.put(
+    `${process.env.REACT_APP_API_URL}/product/star/${_id}`,
+    {
+      star,
+      email,
+    },
+    {
+      headers: {
+        authtoken,
+      },
+    }
+  )
+}
+
+// export const getProductAverageRating = async (_id) => {
+//   return await axios.get(
+//     `${process.env.REACT_APP_API_URL}/product/rating/${_id}`
+//   )
+// }

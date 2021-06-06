@@ -17,20 +17,35 @@ const LoginWithPhone = ({ history }) => {
   const { user } = useSelector((state) => ({ ...state }))
 
   const roleBasedRedirect = (user) => {
-    if (user.role === 'admin') {
-      history.push('/admin/dashboard')
+    let intendedPage = history.location.state
+    if (intendedPage) {
+      history.push(intendedPage.from)
     } else {
-      history.push('/user/history')
+      if (user.role === 'admin') {
+        history.push('/admin/dashboard')
+      } else {
+        history.push('/user/history')
+      }
     }
   }
 
-  //Redirect user to home if they are already logged in
   useEffect(() => {
-    //Hide the completion form
     document.getElementById('form2').style.display = 'none'
-
-    if (user && user.token) history.push('/')
+    let intendedPage = history.location.state
+    if (intendedPage) {
+      return
+    } else {
+      if (user && user.token) history.push('/')
+    }
   }, [user, history])
+
+  //Redirect user to home if they are already logged in
+  // useEffect(() => {
+  //   //Hide the completion form
+  //   document.getElementById('form2').style.display = 'none'
+
+  //   if (user && user.token) history.push('/')
+  // }, [user, history])
 
   //Get number from input field
   const getNumber = (e) => {
@@ -68,7 +83,6 @@ const LoginWithPhone = ({ history }) => {
     window.confirmationResult
       .confirm(code)
       .then(async (result) => {
-        setLoading(false)
         // User signed in successfully.
         const user = result.user
         const idTokenResult = await user.getIdTokenResult()
@@ -96,6 +110,8 @@ const LoginWithPhone = ({ history }) => {
                   : user.email.split('@')[0]
               }`
             )
+            setLoading(false)
+
             roleBasedRedirect(res.data)
           })
           .catch((err) => {
@@ -106,7 +122,8 @@ const LoginWithPhone = ({ history }) => {
       })
       .catch((error) => {
         // User couldn't sign in (bad verification code?)
-        toast.error('Bad verification code!')
+        toast.error('Wrong verification code!')
+        setLoading(false)
         console.log(error)
       })
   }

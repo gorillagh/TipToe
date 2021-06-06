@@ -21,26 +21,36 @@ function Login({ history }) {
   const dispatch = useDispatch()
   const { user } = useSelector((state) => ({ ...state }))
 
-  const roleBasedRedirect = (user) => {
-    if (user.role === 'admin') {
-      history.push('/admin/dashboard')
-    } else {
-      history.push('/user/history')
-    }
-  }
+  let intendedPage = history.location.state
 
   //Redirect user to home if they are already logged in
   useEffect(() => {
-    if (user && user.token) history.push('/')
+    // let intendedPage = history.location.state
+    if (intendedPage) {
+      return
+    } else {
+      if (user && user.token) history.push('/')
+    }
   }, [user, history])
+
+  const roleBasedRedirect = (user) => {
+    // let intendedPage = history.location.state
+    if (intendedPage) {
+      history.push(intendedPage.from)
+    } else {
+      if (user.role === 'admin') {
+        history.push('/admin/dashboard')
+      } else {
+        history.push('/user/history')
+      }
+    }
+  }
 
   //Sign in user with Email and password
   const handleLoginWithEmail = async (e) => {
     e.preventDefault()
     setLoading1('loading')
-    document
-      .querySelectorAll('.label')
-      .forEach((label) => (label.style.display = 'none'))
+
     try {
       const userCredential = await auth.signInWithEmailAndPassword(
         email,
@@ -164,7 +174,16 @@ function Login({ history }) {
 
   const handleLoginWithPhone = (e) => {
     e.preventDefault()
-    history.push('/login/phone')
+
+    // history.push('/login/phone')
+    if (intendedPage) {
+      history.push({
+        pathname: '/login/phone',
+        state: { from: intendedPage.from },
+      })
+    } else {
+      history.push('/login/phone')
+    }
   }
 
   const LoginForm = () => (

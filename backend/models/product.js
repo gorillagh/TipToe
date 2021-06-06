@@ -70,12 +70,12 @@ const productSchema = new Schema(
         'Xbox',
       ],
     },
-    // ratings: [
-    //   {
-    //     star: Number,
-    //     postedby: { type: ObjectId, ref: 'User' },
-    //   },
-    // ],
+    ratings: [
+      {
+        star: Number,
+        postedBy: { type: ObjectId, ref: 'User' },
+      },
+    ],
   },
   { timestamps: true }
 )

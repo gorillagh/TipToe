@@ -1,55 +1,62 @@
 const User = require('../models/user')
 
 exports.createOrUpdateUser = async (req, res) => {
-  let { email, picture, name, phone_number } = await req.user
-  if (name) {
-    {
-      name ? (name = await name) : (name = await email.split('@')[0])
-    }
-    const user = await User.findOneAndUpdate(
-      { email },
+  try {
+    let { email, picture, name, phone_number } = await req.user
+    console.log('Request user =====>', req.user)
+    if (name || email) {
       {
-        email,
-        picture,
-        name,
-      },
-      { new: true }
-    )
+        name ? (name = await name) : (name = await email.split('@')[0])
+      }
 
-    if (!user) {
-      const newUser = await new User({
-        email,
-        picture,
-        name,
-      }).save()
-      // console.log('User Created --->', newUser)
-      res.json(newUser)
+      const user = await User.findOneAndUpdate(
+        { email },
+        {
+          email,
+          picture,
+          name,
+        },
+        { new: true }
+      ).exec()
+
+      if (!user) {
+        const newUser = await new User({
+          email,
+          picture,
+          name,
+        }).save()
+        console.log('User Created --->', newUser)
+        res.json(newUser)
+      } else {
+        res.json(user)
+        console.log('User Updated --->', user)
+      }
     } else {
-      res.json(user)
-      // console.log('User Updated --->', user)
+      const user = await User.findOneAndUpdate(
+        { email: phone_number },
+        {
+          email: phone_number,
+          picture: null,
+          name: 'User',
+        },
+        { new: true }
+      )
+      if (!user) {
+        const newUser = await new User({
+          email: phone_number,
+          picture: null,
+          name: 'User',
+        }).save()
+        // console.log('User Created --->', newUser)
+        res.json(newUser)
+      } else {
+        res.json(user)
+        // console.log('User Updated --->', user)
+      }
     }
-  } else {
-    const user = await User.findOneAndUpdate(
-      { email: phone_number },
-      {
-        email: phone_number,
-        picture: null,
-        name: 'User',
-      },
-      { new: true }
-    )
-    if (!user) {
-      const newUser = await new User({
-        email: phone_number,
-        picture: null,
-        name: 'User',
-      }).save()
-      // console.log('User Created --->', newUser)
-      res.json(newUser)
-    } else {
-      res.json(user)
-      // console.log('User Updated --->', user)
-    }
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({ message: error.message })
   }
 }
 

@@ -2,8 +2,8 @@ const admin = require('../firebase/index')
 const User = require('../models/user')
 
 exports.checkAuth = async (req, res, next) => {
-  const idToken = req.headers.authtoken
   try {
+    const idToken = req.headers.authtoken
     const fbUser = await admin.auth().verifyIdToken(idToken)
     req.user = fbUser
     // console.log('Backend checkauth -->', fbUser)
@@ -15,11 +15,16 @@ exports.checkAuth = async (req, res, next) => {
 }
 
 exports.checkAdmin = async (req, res, next) => {
-  const { email } = await req.user
-  const adminUser = await User.findOne({ email }).exec()
-  if (adminUser.role === 'admin') {
-    next()
-  } else {
-    res.status(403).json({ error: 'Unauthorized access!' })
+  try {
+    const { email } = await req.user
+    const adminUser = await User.findOne({ email }).exec()
+    if (adminUser.role === 'admin') {
+      next()
+    } else {
+      res.status(403).json({ error: 'Unauthorized access!' })
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({ message: error.message })
   }
 }
