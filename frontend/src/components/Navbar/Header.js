@@ -11,6 +11,8 @@ import { Link, useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import firebase from 'firebase'
 
+import SearchInput from '../Forms/SearchInput'
+
 const { SubMenu, Item } = Menu
 
 function Header() {
@@ -36,9 +38,9 @@ function Header() {
   }
 
   return (
-    <div className='bg-white' style={{ height: '48px' }}>
+    <div className='bg-white' style={{ height: '55px' }}>
       <div
-        style={{ zIndex: '98', height: '48px' }}
+        style={{ zIndex: '98', height: '54px' }}
         className='position-fixed d-block w-100 bg-white'
       >
         <div style={{ zIndex: '99' }} className='position-fixed d-block w-100'>
@@ -55,6 +57,12 @@ function Header() {
               >
                 <Link to='/'>
                   <span>TipToe</span>
+                </Link>
+              </Item>
+
+              <Item key='shop' icon={<i className='fas fa-store'></i>}>
+                <Link to='/shop'>
+                  <span>Shop</span>
                 </Link>
               </Item>
 
@@ -97,7 +105,6 @@ function Header() {
                       <i className='fas fa-user mr-2'></i>
                     )
                   }
-                  // title={user.email.split('@')[0]}
                   title={
                     user.name
                       ? user.name.split(' ')[0]
@@ -124,6 +131,9 @@ function Header() {
                   </Item>
                 </SubMenu>
               )}
+              <span className='float-right p-1' key='search'>
+                <SearchInput />
+              </span>
             </Menu>
           </div>
         </div>

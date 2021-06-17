@@ -16,9 +16,9 @@ const UpdateCategory = ({ history, match }) => {
   const { user } = useSelector((state) => ({ ...state }))
 
   const loadCategory = useCallback(async () => {
-    const Category = await viewCategory(match.params.slug)
-    setName(Category.data.name)
-    setOldName(Category.data.name)
+    const result = await viewCategory(match.params.slug)
+    setName(result.data.category.name)
+    setOldName(result.data.category.name)
   }, [match.params.slug])
 
   useEffect(() => {

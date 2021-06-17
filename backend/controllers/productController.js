@@ -1,6 +1,7 @@
 const Product = require('../models/product')
 const User = require('../models/user')
 const slugify = require('slugify')
+const { populate } = require('../models/user')
 
 exports.create = async (req, res) => {
   try {
@@ -208,6 +209,27 @@ exports.productStar = async (req, res) => {
   }
 }
 
+exports.relatedProductsList = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.productId).exec()
+
+    const relatedProducts = await Product.find({
+      _id: { $ne: product._id },
+      category: product.category,
+    })
+      .limit(4)
+      .populate('category')
+      .populate('subcategories')
+      .populate('postedBy')
+      .exec()
+
+    res.json(relatedProducts)
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({ message: error.message })
+  }
+}
+
 // exports.productAverageRating = async (req, res) => {
 //   try {
 //     const product = await Product.findById(req.params.productId).exec()
@@ -224,3 +246,26 @@ exports.productStar = async (req, res) => {
 //     res.status(400).json({ message: error.message })
 //   }
 // }
+
+//Search Filters
+const handleQuery = async (req, res, query) => {
+  const products = await Product.find({ $text: { $search: query } })
+    .populate('category', '_id name')
+    .populate('subcategories', '_id name')
+    .populate('postedBy', '_id name')
+    .exec()
+  res.json(products)
+}
+
+exports.searchFilters = async (req, res) => {
+  try {
+    const { query } = req.body
+
+    if (query) {
+      await handleQuery(req, res, query)
+    }
+  } catch (error) {
+    console.log(error)
+    res.status(400).json({ message: error.message })
+  }
+}

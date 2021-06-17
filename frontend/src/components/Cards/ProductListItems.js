@@ -43,7 +43,7 @@ const ProductListItems = ({ product }) => {
               return (
                 <Link
                   key={subcategory._id}
-                  to={`/subcategroy/${subcategory.slug}`}
+                  to={`/subcategory/${subcategory.slug}`}
                   className='label label-default label-pill pull-xs-right'
                 >
                   {subcategory.name}

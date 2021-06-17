@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   CaretRightOutlined,
@@ -11,8 +11,22 @@ import TypewriterHeader from '../components/Cards/TypewriterHeader'
 import TopSelling from '../components/Home/TopSelling'
 import TopIFans from '../components/Home/TopIFans'
 import GamersCorner from '../components/Home/GamersCorner'
+import { viewCategories } from '../serverFunctions/category'
+import Subcategories from '../components/subcategory/Subcategories'
 
 function Home() {
+  const [categories, setCategories] = useState([])
+
+  useEffect(() => {
+    loadCategories()
+  }, [])
+
+  const loadCategories = () => {
+    viewCategories().then((res) => {
+      setCategories(res.data)
+    })
+  }
+
   return (
     <>
       <header>
@@ -48,42 +62,19 @@ function Home() {
             <div className='col-md-2'>
               <h5>CATEGORIES</h5>
               <hr />
-              <Link to='/'>
-                <h6 className='hero-section-category mb-3'>
-                  iPhones{' '}
-                  <CaretRightOutlined className='hero-section-category-pointer float-right mt-1' />
-                </h6>
-              </Link>
-              <Link to='/'>
-                <h6 className='hero-section-category mb-3'>
-                  Laptops{' '}
-                  <CaretRightOutlined className='hero-section-category-pointer float-right mt-1' />
-                </h6>
-              </Link>
-              <Link to='/'>
-                <h6 className='hero-section-category mb-3'>
-                  Game consoles{' '}
-                  <CaretRightOutlined className='hero-section-category-pointer float-right mt-1' />
-                </h6>
-              </Link>
-              <Link to='/'>
-                <h6 className=' hero-section-category mb-3'>
-                  Games{' '}
-                  <CaretRightOutlined className='hero-section-category-pointer float-right mt-1' />
-                </h6>
-              </Link>
-              <Link to='/'>
-                <h6 className='hero-section-category mb-3'>
-                  Computer Accessories{' '}
-                  <CaretRightOutlined className='hero-section-category-pointer float-right mt-1' />
-                </h6>
-              </Link>
-              <Link to='/'>
-                <h6 className='hero-section-category mb-3'>
-                  Phone Accessories{' '}
-                  <CaretRightOutlined className='hero-section-category-pointer float-right mt-1' />
-                </h6>
-              </Link>
+
+              {categories &&
+                categories.length &&
+                categories.map((category) => {
+                  return (
+                    <Link key={category._id} to={`/category/${category.slug}`}>
+                      <h6 className='hero-section-category mb-3'>
+                        {category.name}
+                        <CaretRightOutlined className='hero-section-category-pointer float-right mt-1' />
+                      </h6>
+                    </Link>
+                  )
+                })}
             </div>
 
             <ShowCaseCarousel />
@@ -161,6 +152,9 @@ function Home() {
         <TopIFans />
         <hr className='my-1' />
         <GamersCorner />
+      </section>
+      <section className='sub-categories m-0'>
+        <Subcategories />
       </section>
     </>
   )

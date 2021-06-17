@@ -66,6 +66,13 @@ const ProductCard = ({ product }) => {
         ]}
       >
         <Link to={`/product/${slug}`}>
+          {/* <div>
+            {product && product.ratings && product.ratings.length > 0 ? (
+              showAverageRating(product, '0.8rem')
+            ) : (
+              <div className='text-center p-2'>Not Rated</div>
+            )}
+          </div> */}
           <Meta
             style={{
               height: 110,

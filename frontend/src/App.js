@@ -29,6 +29,9 @@ import CreateProduct from './pages/Admin/product/CreateProduct.js'
 import AllProducts from './pages/Admin/product/AllProducts'
 import UpdateProduct from './pages/Admin/product/UpdateProduct'
 import Product from './pages/Product.js'
+import Category from './pages/Category.js'
+import Subcategory from './pages/Subcategory.js'
+import Shop from './pages/Shop.js'
 
 //To check if user is logged in
 import LoggedInUser from './LoggedInUser'
@@ -75,6 +78,9 @@ function App() {
           component={UpdateProduct}
         />
         <Route exact path='/product/:slug' component={Product} />
+        <Route exact path='/category/:slug' component={Category} />
+        <Route exact path='/subcategory/:slug' component={Subcategory} />
+        <Route exact path='/shop' component={Shop} />
       </Switch>
       <Footer />
     </>

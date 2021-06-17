@@ -73,3 +73,8 @@ p {
 .ant-modal-body {
   text-align: center;
 }
+
+.bmd-form-group {
+  padding: 0 !important;
+  margin: 0 !important;
+}

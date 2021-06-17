@@ -22,10 +22,10 @@ const UpdateSubCategory = ({ history, match }) => {
   const { user } = useSelector((state) => ({ ...state }))
 
   const loadSubCategory = useCallback(async () => {
-    const SubCategory = await viewSubCategory(match.params.slug)
-    setName(SubCategory.data.name)
-    setOldName(SubCategory.data.name)
-    setParent(SubCategory.data.parent)
+    const result = await viewSubCategory(match.params.slug)
+    setName(result.data.subcategory.name)
+    setOldName(result.data.subcategory.name)
+    setParent(result.data.subcategory.parent)
   }, [match.params.slug])
 
   const loadCategories = async () => {
