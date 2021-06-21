@@ -16,6 +16,7 @@ const productSchema = new Schema(
       unique: true,
       lowercase: true,
       index: true,
+      text: true,
     },
     description: {
       type: String,
@@ -32,11 +33,13 @@ const productSchema = new Schema(
     category: {
       type: ObjectId,
       ref: 'Category',
+      text: true,
     },
     subcategories: [
       {
         type: ObjectId,
         ref: 'SubCategory',
+        text: true,
       },
     ],
     quantity: Number,
@@ -69,6 +72,7 @@ const productSchema = new Schema(
         'PlayStation',
         'Xbox',
       ],
+      text: true,
     },
     ratings: [
       {
@@ -79,5 +83,6 @@ const productSchema = new Schema(
   },
   { timestamps: true }
 )
+productSchema.index({ '$**': 'text' })
 
 module.exports = model('Product', productSchema)

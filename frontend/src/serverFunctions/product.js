@@ -82,6 +82,13 @@ export const getProductsBycategory = async (sort, order, categories, limit) => {
   )
 }
 
+export const fetchProductsByFilter = async (arg) => {
+  return await axios.post(
+    `${process.env.REACT_APP_API_URL}/search/filters`,
+    arg
+  )
+}
+
 export const updateProductRating = async (star, _id, email, authtoken) => {
   return await axios.put(
     `${process.env.REACT_APP_API_URL}/product/star/${_id}`,
