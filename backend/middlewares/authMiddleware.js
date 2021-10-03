@@ -6,7 +6,7 @@ exports.checkAuth = async (req, res, next) => {
     const idToken = req.headers.authtoken
     const fbUser = await admin.auth().verifyIdToken(idToken)
     req.user = fbUser
-    // console.log('Backend checkauth -->', fbUser)
+    console.log('Backend checkauth -->', fbUser)
     next()
   } catch (error) {
     res.status(401).json({ error: 'Invalid or expired token' })

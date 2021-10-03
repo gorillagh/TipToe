@@ -3,6 +3,7 @@ import React from 'react'
 //toastify for notification
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import SideDrawer from './components/Drawer/SideDrawer.js'
 
 //core components
 import Home from './pages/Home.js'
@@ -32,6 +33,8 @@ import Product from './pages/Product.js'
 import Category from './pages/Category.js'
 import Subcategory from './pages/Subcategory.js'
 import Shop from './pages/Shop.js'
+import Cart from './pages/Cart.js'
+import Checkout from './pages/Checkout.js'
 
 //To check if user is logged in
 import LoggedInUser from './LoggedInUser'
@@ -42,6 +45,7 @@ function App() {
       {LoggedInUser()}
       <Header />
       <ToastContainer />
+      <SideDrawer />
       <Switch>
         <Route exact path='/' component={Home} />
         <Route exact path='/login' component={Login} />
@@ -81,6 +85,9 @@ function App() {
         <Route exact path='/category/:slug' component={Category} />
         <Route exact path='/subcategory/:slug' component={Subcategory} />
         <Route exact path='/shop' component={Shop} />
+        <Route exact path='/cart' component={Cart} />
+
+        <UserRoute exact path='/checkout' component={Checkout} />
       </Switch>
       <Footer />
     </>

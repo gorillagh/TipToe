@@ -8,7 +8,7 @@ const productSchema = new Schema(
       type: String,
       trim: true,
       required: true,
-      maxlength: 32,
+      maxlength: 70,
       text: true,
     },
     slug: {

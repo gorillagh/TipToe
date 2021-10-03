@@ -10,6 +10,7 @@ import { Menu } from 'antd'
 import { Link, useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import firebase from 'firebase'
+import { Badge } from 'antd'
 
 import SearchInput from '../Forms/SearchInput'
 
@@ -19,7 +20,7 @@ function Header() {
   const [current, setCurrent] = useState('home')
   const dispatch = useDispatch()
   const history = useHistory()
-  const { user } = useSelector((state) => ({ ...state }))
+  const { user, cart } = useSelector((state) => ({ ...state }))
 
   const Logout = async () => {
     //Logout user from firebase
@@ -63,6 +64,21 @@ function Header() {
               <Item key='shop' icon={<i className='fas fa-store'></i>}>
                 <Link to='/shop'>
                   <span>Shop</span>
+                </Link>
+              </Item>
+
+              <Item key='cart' icon={<i className='fas fa-shopping-cart'></i>}>
+                <Link to='/cart'>
+                  <Badge
+                    title='Cart'
+                    showZero={false}
+                    count={
+                      <span className='badge badge-danger'>{cart.length}</span>
+                    }
+                    offset={[9, 0]}
+                  >
+                    Cart
+                  </Badge>
                 </Link>
               </Item>
 

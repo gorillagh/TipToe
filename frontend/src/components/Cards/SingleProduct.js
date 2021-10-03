@@ -1,6 +1,8 @@
-import React from 'react'
-import { Card } from 'antd'
+import React, { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { Card, Tooltip } from 'antd'
 import { Link } from 'react-router-dom'
+import _ from 'lodash'
 import { HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons'
 import { Carousel } from 'react-responsive-carousel'
 import StarRatings from 'react-star-ratings'
@@ -24,6 +26,38 @@ const SingleProduct = ({
   star,
 }) => {
   const { title, images, description, category, _id } = product
+  const dispatch = useDispatch()
+  const { user, cart } = useSelector((state) => ({ ...state }))
+  const [tooltip, setTooltip] = useState('Click to add product')
+  const handleAddToCart = () => {
+    let cart = []
+    //if there exist cart in local storage, get it
+    if (typeof window !== 'undefined') {
+      if (localStorage.getItem('cart')) {
+        cart = JSON.parse(localStorage.getItem('cart'))
+      }
+      cart.push({
+        ...product,
+        count: 1,
+      })
+      // remove duplicate products from cart
+      const unique = _.uniqWith(cart, _.isEqual)
+      //Save cart in local storage
+      localStorage.setItem('cart', JSON.stringify(unique))
+
+      setTooltip('Added!')
+
+      //Dispatch to redux
+      dispatch({
+        type: 'ADD_TO_CART',
+        payload: unique,
+      })
+      dispatch({
+        type: 'SET_VISIBLE',
+        payload: true,
+      })
+    }
+  }
 
   return (
     <>
@@ -43,12 +77,12 @@ const SingleProduct = ({
         </div>
 
         {category && (
-          <Tabs type='card' defaultActiveKey='1'>
+          <Tabs className='text-left' type='card' defaultActiveKey='1'>
             <TabPane tab='Description' key='1'>
               {description}
             </TabPane>
             <TabPane
-              disabled={category.name === 'Game Disc'}
+              disabled={category.name === 'Game Discs'}
               tab='Specification'
               key='2'
             >
@@ -80,10 +114,12 @@ const SingleProduct = ({
 
         <Card
           actions={[
-            <>
-              <ShoppingCartOutlined className='text-success' /> <br /> Add to
-              Cart
-            </>,
+            <Tooltip title={tooltip} color={tooltip === 'Added!' && 'green'}>
+              <a onClick={handleAddToCart}>
+                <ShoppingCartOutlined className='text-success' /> <br /> Add to
+                Cart
+              </a>
+            </Tooltip>,
             <Link to='/wishlist'>
               <HeartOutlined className='text-info' /> <br /> Add to wishlist
             </Link>,

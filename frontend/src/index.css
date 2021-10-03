@@ -1,11 +1,14 @@
 body {
   background-color: #f5f5f5;
   background-color: #d0ebff;
+  background-color: #e66524;
+
   /* background-color: #8991a6; */
   /* background-image: url('https://www.transparenttextures.com/patterns/brick-wall-dark.png'); */
   font-family: Ubuntu;
 }
-.container {
+.container,
+.container-fluid {
   background-color: #fff;
 }
 .Toastify__toast--success {
@@ -26,9 +29,9 @@ body {
   left: 0;
   z-index: -1;
 } */
-p {
+/* p {
   color: #d0a37d;
-}
+} */
 
 /* .form-group .label span {
   display: inline-block;
