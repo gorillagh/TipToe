@@ -35,6 +35,8 @@ import Subcategory from './pages/Subcategory.js'
 import Shop from './pages/Shop.js'
 import Cart from './pages/Cart.js'
 import Checkout from './pages/Checkout.js'
+import CreateCouponPage from './pages/Admin/coupon/CreateCouponPage.js'
+import Payment from './pages/Payment.js'
 
 //To check if user is logged in
 import LoggedInUser from './LoggedInUser'
@@ -88,6 +90,8 @@ function App() {
         <Route exact path='/cart' component={Cart} />
 
         <UserRoute exact path='/checkout' component={Checkout} />
+        <AdminRoute exact path='/admin/coupon' component={CreateCouponPage} />
+        <UserRoute exact path='/payment' component={Payment} />
       </Switch>
       <Footer />
     </>
