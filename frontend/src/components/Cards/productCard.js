@@ -13,7 +13,7 @@ const ProductCard = ({ product }) => {
   const { user, cart, drawer } = useSelector((state) => ({ ...state }))
 
   const { Meta } = Card
-  const { title, images, description, slug, price } = product
+  const { title, images, description, slug, price, quantity } = product
   const [tooltip, setTooltip] = useState('Click to add product')
 
   const handleAddToCart = () => {
@@ -115,12 +115,21 @@ const ProductCard = ({ product }) => {
               </span>
             </div>
           </Link>,
-          <Tooltip title={tooltip} color={tooltip === 'Added!' && 'green'}>
-            <a onClick={handleAddToCart}>
-              <span className='text-danger'>
-                <ShoppingCartOutlined key='cart' /> <br /> Add to Cart
-              </span>
-            </a>
+          <Tooltip
+            title={
+              quantity < 1 ? 'Out of stock. Please Checkback soon' : tooltip
+            }
+            color={tooltip === 'Added!' && 'green'}
+          >
+            {quantity < 1 ? (
+              <span className='text-danger'>Out of stock!</span>
+            ) : (
+              <a onClick={handleAddToCart}>
+                <span className='text-danger'>
+                  <ShoppingCartOutlined key='cart' /> <br /> Add to Cart
+                </span>
+              </a>
+            )}
           </Tooltip>,
         ]}
       >

@@ -25,7 +25,7 @@ const SingleProduct = ({
   // productRating,
   star,
 }) => {
-  const { title, images, description, category, _id } = product
+  const { title, images, description, category, _id, quantity } = product
   const dispatch = useDispatch()
   const { user, cart } = useSelector((state) => ({ ...state }))
   const [tooltip, setTooltip] = useState('Click to add product')
@@ -114,11 +114,28 @@ const SingleProduct = ({
 
         <Card
           actions={[
-            <Tooltip title={tooltip} color={tooltip === 'Added!' && 'green'}>
-              <a onClick={handleAddToCart}>
-                <ShoppingCartOutlined className='text-success' /> <br /> Add to
-                Cart
-              </a>
+            <Tooltip
+              title={
+                quantity < 1 ? 'Out of stock. Please Checkback soon' : tooltip
+              }
+              color={tooltip === 'Added!' && 'green'}
+            >
+              {quantity < 1 ? (
+                <div>
+                  <span disabled className='text-danger'>
+                    Out of stock!
+                  </span>
+                  <br />
+                  <small disabled>Please check back soon.</small>
+                </div>
+              ) : (
+                <a onClick={handleAddToCart}>
+                  <span className='text-danger'>
+                    <ShoppingCartOutlined className='text-success' key='cart' />{' '}
+                    <br /> Add to Cart
+                  </span>
+                </a>
+              )}
             </Tooltip>,
             <Link to='/wishlist'>
               <HeartOutlined className='text-info' /> <br /> Add to wishlist

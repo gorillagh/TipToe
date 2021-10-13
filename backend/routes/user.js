@@ -13,6 +13,7 @@ const {
   saveAddressToDb,
   applyCouponToUserCart,
   createOrder,
+  getOrders,
 } = require('../controllers/userController')
 
 router.post('/user/cart', checkAuth, userCart)
@@ -25,6 +26,7 @@ router.post('/user/cart/coupon', checkAuth, applyCouponToUserCart)
 
 //Create Order
 router.post('/user/order', checkAuth, createOrder)
+router.get('/user/orders', checkAuth, getOrders)
 
 // router.get('/user', (req, res) => {
 //   res.json({

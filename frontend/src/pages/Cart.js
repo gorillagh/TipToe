@@ -2,12 +2,14 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { Button } from 'antd'
 import ProductCardInCheckout from '../components/Cards/ProductCardInCheckout'
 import { saveToUserCart } from '../serverFunctions/user'
 
 const Cart = ({ history }) => {
   const dispatch = useDispatch()
   const { user, cart } = useSelector((state) => ({ ...state }))
+  const [loading, setLoading] = useState(false)
 
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -15,8 +17,10 @@ const Cart = ({ history }) => {
   })
 
   const saveOrderToDb = () => {
+    setLoading(true)
     saveToUserCart(cart, user.token)
       .then((res) => {
+        setLoading(false)
         if (res.data.ok) {
           history.push('/checkout')
         } else {
@@ -67,7 +71,11 @@ const Cart = ({ history }) => {
 
                 <tbody>
                   {cart.map((p) => (
-                    <ProductCardInCheckout key={p._id} p={p} />
+                    <ProductCardInCheckout
+                      loading={loading}
+                      key={p._id}
+                      p={p}
+                    />
                   ))}
                 </tbody>
               </table>
@@ -104,12 +112,19 @@ const Cart = ({ history }) => {
               </p>
               <hr />
               {user && user.token ? (
-                <button
+                <Button
                   onClick={saveOrderToDb}
                   className='btn btn-raised btn-success btn-block btn-sm mt-2'
+                  type='primary'
+                  loading={loading}
+                  // icon={
+                  //   !couponButtonLoading && (
+                  //     <i className='fas mr-1 fa-percentage'></i>
+                  //   )
+                  // }
                 >
                   Checkout
-                </button>
+                </Button>
               ) : (
                 <Link
                   to={{

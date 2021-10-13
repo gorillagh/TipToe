@@ -124,6 +124,33 @@ exports.createOrder = async (req, res) => {
     orderedBy: user._id,
   }).save()
 
+  // Decrement product and increment sold
+  let bulkOption = products.map((product) => {
+    return {
+      updateOne: {
+        filter: { _id: product.product._id },
+        update: { $inc: { quantity: -product.count, sold: +product.count } },
+      },
+    }
+  })
+
+  let updated = await Product.bulkWrite(bulkOption, {})
+  console.log('Product quantity-- and sold++----->', updated)
+
   console.log('NEW ORDER SAVED', newOrder)
   res.json({ ok: true })
+}
+
+exports.getOrders = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.user.email }).exec()
+
+    const orders = await Order.find({ orderedBy: user._id })
+      .populate('products.product')
+      .sort({ createdAt: -1 })
+      .exec()
+    res.json(orders)
+  } catch (error) {
+    console.log(error)
+  }
 }

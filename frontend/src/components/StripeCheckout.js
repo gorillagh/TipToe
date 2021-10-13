@@ -206,6 +206,7 @@ const StripeCheckout = ({ history }) => {
       </p>
 
       <button
+        hidden={true}
         className='btn btn-primary btn-raised'
         onClick={handleFlutterwavePayment}
       >

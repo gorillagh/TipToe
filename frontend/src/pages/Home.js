@@ -63,8 +63,7 @@ function Home() {
               <h5>CATEGORIES</h5>
               <hr />
 
-              {categories &&
-                categories.length &&
+              {categories && categories.length > 0 ? (
                 categories.map((category) => {
                   return (
                     <Link key={category._id} to={`/category/${category.slug}`}>
@@ -74,7 +73,10 @@ function Home() {
                       </h6>
                     </Link>
                   )
-                })}
+                })
+              ) : (
+                <p className='text-danger'>Loading categories...</p>
+              )}
             </div>
 
             <ShowCaseCarousel />

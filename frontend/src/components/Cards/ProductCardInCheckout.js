@@ -4,7 +4,7 @@ import TipToeIcon from '../../images/favicon.ico'
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 
-const ProductCardInCheckout = ({ p }) => {
+const ProductCardInCheckout = ({ p, loading }) => {
   const colors = ['Black', 'Brown', 'Silver', 'White', 'Blue']
   const dispatch = useDispatch()
 
@@ -53,6 +53,7 @@ const ProductCardInCheckout = ({ p }) => {
   }
 
   const handleDeleteItem = () => {
+    if (loading) return
     if (
       window.confirm(`You are about to remove "${p.title}" from your cart!`)
     ) {
@@ -103,6 +104,7 @@ const ProductCardInCheckout = ({ p }) => {
       <td>{p.price}</td>
       <td>
         <input
+          disabled={loading}
           onKeyPress={handleKeyPress}
           type='number'
           className='form-control text-center'
@@ -114,6 +116,7 @@ const ProductCardInCheckout = ({ p }) => {
       </td>
       <td>
         <select
+          disabled={loading}
           onChange={handleColorChange}
           name='color'
           className='form-control'

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import ReactQuill from 'react-quill'
+import { Button } from 'antd'
 import 'react-quill/dist/quill.snow.css'
 
 import {
@@ -14,10 +15,12 @@ import {
 const Checkout = ({ history }) => {
   const { user } = useSelector((state) => ({ ...state }))
   const dispatch = useDispatch()
+  const [saveButtonLoading, setSaveButtonLoading] = useState(false)
   const [products, setProducts] = useState([])
   const [total, setTotal] = useState(0)
   const [address, setAddress] = useState('')
   const [coupon, setCoupon] = useState('')
+  const [couponButtonLoading, setCouponButtonLoading] = useState(false)
   const [addressedSaved, setaddressedSaved] = useState(false)
   const [discount, setDiscount] = useState('')
   const [totalAfterDiscount, setTotalAfterDiscount] = useState(0)
@@ -32,26 +35,31 @@ const Checkout = ({ history }) => {
   }, [])
 
   const saveAddress = async () => {
+    setSaveButtonLoading(true)
     console.log('Address--->', address, address.length)
 
     if (address !== '') {
       saveAddressToDb(address, user.token).then((res) => {
         if (res.data.ok) {
           setaddressedSaved(true)
+          setSaveButtonLoading(false)
           toast.success('Addressed saved!')
         }
       })
     } else {
+      setSaveButtonLoading(false)
       toast.error('Please provide a valid address')
       return
     }
   }
 
   const applyCoupon = () => {
+    setCouponButtonLoading(true)
     console.log('Send coupon to backend', coupon)
     applyDiscount(coupon, user.token).then((res) => {
       console.log(('Res on coupon applied===>', res.data))
       if (res.data) {
+        setCouponButtonLoading(false)
         setTotalAfterDiscount(res.data.totalAfterDiscount)
         setDiscount(res.data.discount)
         //push the totalAfterDiscount to redux
@@ -107,40 +115,51 @@ const Checkout = ({ history }) => {
         <div className='col-md-6 px-5 py-3'>
           <h5>Please provide your delivery Address</h5>
           <ReactQuill theme='snow' value={address} onChange={setAddress} />
-          <button
-            className='btn btn-primary mt-2 btn-raised'
-            onClick={saveAddress}
-          >
-            Save
-          </button>
+
+          <div className='text-right'>
+            <Button
+              className='btn mt-2 btn-raised'
+              onClick={saveAddress}
+              type='primary'
+              loading={saveButtonLoading}
+              icon={!saveButtonLoading && <i className='mr-1 far fa-save'></i>}
+            >
+              Save
+            </Button>
+          </div>
+
           <hr />
           <h4>Got Coupon?</h4>
-          <div className='row'>
-            <div className='col-md-10'>
-              <input
-                className='form-control'
-                type='text'
-                value={coupon}
-                onChange={(e) => {
-                  setCoupon(e.target.value)
-                  setDiscountError('')
-                }}
-              />
-            </div>
-            <div className='col-md-2'>
-              <button
-                onClick={applyCoupon}
-                className='btn btn-raised btn-primary btn-block'
-              >
-                Apply
-              </button>
-            </div>
-            {discountError && (
-              <p className='text-center w-100 my-3 bg-danger'>
-                Invalid Coupon!
-              </p>
-            )}
+
+          <input
+            className='form-control'
+            type='text'
+            value={coupon}
+            onChange={(e) => {
+              setCoupon(e.target.value)
+              setDiscountError('')
+            }}
+          />
+
+          <div className='text-right'>
+            <Button
+              className='btn mt-2 btn-raised'
+              onClick={applyCoupon}
+              type='primary'
+              loading={couponButtonLoading}
+              icon={
+                !couponButtonLoading && (
+                  <i className='fas mr-1 fa-percentage'></i>
+                )
+              }
+            >
+              Apply
+            </Button>
           </div>
+
+          {discountError && (
+            <p className='text-center w-100 my-3 bg-danger'>Invalid Coupon!</p>
+          )}
         </div>
         <div className='col-md-6 px-4 py-3'>
           <h5>Order Summary</h5>
