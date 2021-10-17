@@ -10,3 +10,19 @@ export const flutterPayment = async (coupon, authtoken) =>
       },
     }
   )
+
+export const verifyTransactionAndCreateOrder = async (
+  transactionId,
+  authtoken
+) =>
+  axios.post(
+    `${process.env.REACT_APP_API_URL}/flutterwave/verify-transaction`,
+    {
+      transactionId,
+    },
+    {
+      headers: {
+        authtoken,
+      },
+    }
+  )

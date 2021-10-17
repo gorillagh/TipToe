@@ -1,49 +1,71 @@
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
+import { Switch, Route } from 'react-router-dom'
 
 //toastify for notification
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import SideDrawer from './components/Drawer/SideDrawer.js'
 
-//core components
-import Home from './pages/Home.js'
-import Login from './pages/auth/Login.js'
-import LoginWithPhone from './pages/auth/LoginWithPhone.js'
-import RegisterStart from './pages/auth/RegisterStart.js'
-import RegisterComplete from './pages/auth/RegisterComplete'
-import ForgotPassword from './pages/auth/ForgotPassword'
-import { Switch, Route } from 'react-router-dom'
-import Header from './components/Navbar/Header'
-import Footer from './components/Footer'
-import UserRoute from './components/routesComponents/UserRoute'
-import UserHistory from './pages/User/UserHistory'
-import UserPassword from './pages/User/UserPassword'
-import UserWishlist from './pages/User/UserWishlist'
-// import UserNav1 from './components/Navbar/UserNav1'
-import AdminRoute from './components/routesComponents/AdminRoute'
-import AdminDashboard from './pages/Admin/AdminDashboard'
-import Categories from './pages/Admin/category/Categories'
-import UpdateCategory from './pages/Admin/category/UpdateCategory'
-import SubCategories from './pages/Admin/subCategory/SubCategories'
-import UpdateSubCategory from './pages/Admin/subCategory/UpdateSubCategory'
-import CreateProduct from './pages/Admin/product/CreateProduct.js'
-import AllProducts from './pages/Admin/product/AllProducts'
-import UpdateProduct from './pages/Admin/product/UpdateProduct'
-import Product from './pages/Product.js'
-import Category from './pages/Category.js'
-import Subcategory from './pages/Subcategory.js'
-import Shop from './pages/Shop.js'
-import Cart from './pages/Cart.js'
-import Checkout from './pages/Checkout.js'
-import CreateCouponPage from './pages/Admin/coupon/CreateCouponPage.js'
-import Payment from './pages/Payment.js'
+import { LoadingOutlined } from '@ant-design/icons'
 
 //To check if user is logged in
 import LoggedInUser from './LoggedInUser'
 
+//core components
+const SideDrawer = lazy(() => import('./components/Drawer/SideDrawer.js'))
+const Home = lazy(() => import('./pages/Home.js'))
+const Login = lazy(() => import('./pages/auth/Login.js'))
+const LoginWithPhone = lazy(() => import('./pages/auth/LoginWithPhone.js'))
+const RegisterStart = lazy(() => import('./pages/auth/RegisterStart.js'))
+const RegisterComplete = lazy(() => import('./pages/auth/RegisterComplete'))
+const ForgotPassword = lazy(() => import('./pages/auth/ForgotPassword'))
+const Header = lazy(() => import('./components/Navbar/Header'))
+const Footer = lazy(() => import('./components/Footer'))
+const UserRoute = lazy(() => import('./components/routesComponents/UserRoute'))
+const UserHistory = lazy(() => import('./pages/User/UserHistory'))
+const UserPassword = lazy(() => import('./pages/User/UserPassword'))
+const UserWishlist = lazy(() => import('./pages/User/UserWishlist'))
+// const UserNav1 =lazy(()=>import('./components/Navbar/UserNav1'))
+const AdminRoute = lazy(() =>
+  import('./components/routesComponents/AdminRoute')
+)
+const AdminDashboard = lazy(() => import('./pages/Admin/AdminDashboard'))
+const Categories = lazy(() => import('./pages/Admin/category/Categories'))
+const UpdateCategory = lazy(() =>
+  import('./pages/Admin/category/UpdateCategory')
+)
+const SubCategories = lazy(() =>
+  import('./pages/Admin/subCategory/SubCategories')
+)
+const UpdateSubCategory = lazy(() =>
+  import('./pages/Admin/subCategory/UpdateSubCategory')
+)
+const CreateProduct = lazy(() =>
+  import('./pages/Admin/product/CreateProduct.js')
+)
+const AllProducts = lazy(() => import('./pages/Admin/product/AllProducts'))
+const UpdateProduct = lazy(() => import('./pages/Admin/product/UpdateProduct'))
+const Product = lazy(() => import('./pages/Product.js'))
+const Category = lazy(() => import('./pages/Category.js'))
+const Subcategory = lazy(() => import('./pages/Subcategory.js'))
+const Shop = lazy(() => import('./pages/Shop.js'))
+const Cart = lazy(() => import('./pages/Cart.js'))
+const Checkout = lazy(() => import('./pages/Checkout.js'))
+const CreateCouponPage = lazy(() =>
+  import('./pages/Admin/coupon/CreateCouponPage.js')
+)
+const Payment = lazy(() => import('./pages/Payment.js'))
+const OrderResult = lazy(() => import('./pages/OrderResult'))
+
 function App() {
   return (
-    <>
+    <Suspense
+      fallback={
+        <div className='col text-center p-5'>
+          TipT
+          {<LoadingOutlined />}e
+        </div>
+      }
+    >
       {LoggedInUser()}
       <Header />
       <ToastContainer />
@@ -92,9 +114,10 @@ function App() {
         <UserRoute exact path='/checkout' component={Checkout} />
         <AdminRoute exact path='/admin/coupon' component={CreateCouponPage} />
         <UserRoute exact path='/payment' component={Payment} />
+        <UserRoute exact path='/order/result' component={OrderResult} />
       </Switch>
       <Footer />
-    </>
+    </Suspense>
   )
 }
 

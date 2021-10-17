@@ -64,12 +64,12 @@ exports.currentUser = async (req, res) => {
   const { email, phone_number } = await req.user
 
   if (email) {
-    await User.findOne({ email }).exec((err, user) => {
+    User.findOne({ email }).exec((err, user) => {
       if (err) throw err
       else res.json(user)
     })
   } else {
-    await User.findOne({ email: phone_number }).exec((err, user) => {
+    User.findOne({ email: phone_number }).exec((err, user) => {
       if (err) throw err
       else res.json(user)
     })

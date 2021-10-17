@@ -4,19 +4,22 @@ import { getOrders, changeStatus } from '../../serverFunctions/admin'
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import Orders from '../../components/order/Orders'
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
 
 const AdminDashboard = () => {
   const [orders, setOrders] = useState([])
+  const [loading, setLoading] = useState(false)
   const { user } = useSelector((state) => ({ ...state }))
 
   useEffect(() => {
     loadOrders()
   }, [])
-  const loadOrders = () =>
-    getOrders(user.token).then((res) => {
-      console.log(JSON.stringify(res.data, null, 4))
-      setOrders(res.data)
-    })
+  const loadOrders = () => setLoading(true)
+  getOrders(user.token).then((res) => {
+    console.log(JSON.stringify(res.data, null, 4))
+    setOrders(res.data)
+    setLoading(false)
+  })
 
   const handleStatusChange = (orderId, orderStatus) => {
     changeStatus(orderId, orderStatus, user.token).then((res) => {
@@ -32,11 +35,13 @@ const AdminDashboard = () => {
           <AdminNav />
         </div>
         <div className='col-md-8 my-3'>
-          <header className='header'>
-            <h4 className='text-center'>Admin Dashboard</h4>
-          </header>
+          <h4 className='text-center'>Admin Dashboard</h4>
           <hr />
-          <Orders orders={orders} handleStatusChange={handleStatusChange} />
+          {loading ? (
+            <h4 className='text-danger'>Loading...</h4>
+          ) : (
+            <Orders orders={orders} handleStatusChange={handleStatusChange} />
+          )}
         </div>
       </div>
     </div>

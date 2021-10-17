@@ -10,21 +10,30 @@ import {
   emptyUserCart,
   getUserCart,
   saveAddressToDb,
+  cashOrder,
 } from '../serverFunctions/user'
+import { flutterPayment } from '../serverFunctions/flutterwave'
 
 const Checkout = ({ history }) => {
-  const { user } = useSelector((state) => ({ ...state }))
+  const { user, COD, coupon } = useSelector((state) => ({ ...state }))
   const dispatch = useDispatch()
+  const [loading, setLoading] = useState(false)
   const [saveButtonLoading, setSaveButtonLoading] = useState(false)
   const [products, setProducts] = useState([])
   const [total, setTotal] = useState(0)
   const [address, setAddress] = useState('')
-  const [coupon, setCoupon] = useState('')
+  const [coupontoApply, setCouponToApply] = useState('')
   const [couponButtonLoading, setCouponButtonLoading] = useState(false)
   const [addressedSaved, setaddressedSaved] = useState(false)
   const [discount, setDiscount] = useState('')
   const [totalAfterDiscount, setTotalAfterDiscount] = useState(0)
   const [discountError, setDiscountError] = useState('')
+
+  let localStorageCOD = ''
+  if (typeof window !== 'undefined') {
+    localStorageCOD = localStorage.getItem('COD')
+  }
+  // console.log('COD------->', localStorageCOD)
 
   useEffect(() => {
     getUserCart(user.token).then((res) => {
@@ -55,8 +64,8 @@ const Checkout = ({ history }) => {
 
   const applyCoupon = () => {
     setCouponButtonLoading(true)
-    console.log('Send coupon to backend', coupon)
-    applyDiscount(coupon, user.token).then((res) => {
+    console.log('Send coupon to backend', coupontoApply)
+    applyDiscount(coupontoApply, user.token).then((res) => {
       console.log(('Res on coupon applied===>', res.data))
       if (res.data) {
         setCouponButtonLoading(false)
@@ -88,7 +97,7 @@ const Checkout = ({ history }) => {
           setProducts([])
           setTotal(0)
           setTotalAfterDiscount(0)
-          setCoupon('')
+          setCouponToApply('')
           //remove from local storage
           if (typeof window !== 'undefined') {
             localStorage.removeItem('cart')
@@ -107,6 +116,54 @@ const Checkout = ({ history }) => {
     }
   }
 
+  const createCODOrder = () => {
+    if (window.confirm('Order and pay cash on delivery!')) {
+      cashOrder(localStorageCOD, coupon, user.token).then((res) => {
+        console.log(res.data)
+
+        if (res.data.ok) {
+          // empty cart from local storage
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('cart')
+            localStorage.removeItem('COD')
+          }
+          // empty cart from redux
+          dispatch({
+            type: 'ADD_TO_CART',
+            payload: [],
+          })
+          //reset coupon to false
+          dispatch({
+            type: 'COUPON_APPLIED',
+            payload: false,
+          })
+          dispatch({
+            type: 'COD',
+            payload: false,
+          })
+          // empty cart from database
+          emptyUserCart(user.token)
+          setLoading(false)
+          setTimeout(() => {
+            history.push('/user/history')
+          }, 1000)
+        }
+      })
+    }
+  }
+
+  const handleFlutterwavePayment = async () => {
+    setLoading(true)
+    flutterPayment(coupon, user.token).then((res) => {
+      if (res.data.payment.status === 'success') {
+        const url = res.data.payment.data.link.toString()
+
+        window.location = url
+        // setLoading(false)
+      }
+    })
+  }
+
   return (
     <div className='container-fluid '>
       <h4 className='text-center'>Checkout</h4>
@@ -114,10 +171,16 @@ const Checkout = ({ history }) => {
       <div className='row'>
         <div className='col-md-6 px-5 py-3'>
           <h5>Please provide your delivery Address</h5>
-          <ReactQuill theme='snow' value={address} onChange={setAddress} />
+          <ReactQuill
+            theme='snow'
+            disabled={loading}
+            value={address}
+            onChange={setAddress}
+          />
 
           <div className='text-right'>
             <Button
+              disabled={loading}
               className='btn mt-2 btn-raised'
               onClick={saveAddress}
               type='primary'
@@ -129,20 +192,22 @@ const Checkout = ({ history }) => {
           </div>
 
           <hr />
-          <h4>Got Coupon?</h4>
+          <h5>Got Coupon?</h5>
 
           <input
+            disabled={loading}
             className='form-control'
             type='text'
-            value={coupon}
+            value={coupontoApply}
             onChange={(e) => {
-              setCoupon(e.target.value)
+              setCouponToApply(e.target.value)
               setDiscountError('')
             }}
           />
 
           <div className='text-right'>
             <Button
+              disabled={loading}
               className='btn mt-2 btn-raised'
               onClick={applyCoupon}
               type='primary'
@@ -161,7 +226,7 @@ const Checkout = ({ history }) => {
             <p className='text-center w-100 my-3 bg-danger'>Invalid Coupon!</p>
           )}
         </div>
-        <div className='col-md-6 px-4 py-3'>
+        <div className='col-md-6 px-5 py-3'>
           <h5>Order Summary</h5>
           <hr />
           <p>{products.length} Products</p>
@@ -188,17 +253,30 @@ const Checkout = ({ history }) => {
 
           <div className='row'>
             <div className='col-md-6'>
-              <button
-                onClick={() => history.push('/payment')}
-                disabled={!products.length || !addressedSaved}
-                className='btn btn-primary btn-raised btn-success'
-              >
-                Place Order
-              </button>
+              {localStorageCOD === 'true' ? (
+                <Button
+                  loading={loading}
+                  onClick={createCODOrder}
+                  disabled={!products.length || !addressedSaved}
+                  className='btn btn-primary btn-raised btn-success'
+                >
+                  Place Order
+                </Button>
+              ) : (
+                <Button
+                  // onClick={() => history.push('/payment')}
+                  loading={loading}
+                  onClick={handleFlutterwavePayment}
+                  disabled={!products.length || !addressedSaved}
+                  className='btn btn-primary btn-raised btn-success'
+                >
+                  Place Order
+                </Button>
+              )}
             </div>
             <div className='col-md-6'>
               <button
-                disabled={!products.length}
+                disabled={!products.length || loading}
                 onClick={clearCart}
                 className='btn btn-primary btn-raised btn-success'
               >

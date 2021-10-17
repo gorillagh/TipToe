@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Card, Tooltip } from 'antd'
 import { Link } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import _ from 'lodash'
 import { HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons'
 import { Carousel } from 'react-responsive-carousel'
@@ -11,6 +13,7 @@ import ProductListItems from './ProductListItems'
 import { Tabs } from 'antd'
 import RatingModal from '../Modals/RatingModal'
 import { showAverageRating } from '../rating'
+import { addToWishlist } from '../../serverFunctions/user'
 
 const { TabPane } = Tabs
 
@@ -29,6 +32,8 @@ const SingleProduct = ({
   const dispatch = useDispatch()
   const { user, cart } = useSelector((state) => ({ ...state }))
   const [tooltip, setTooltip] = useState('Click to add product')
+  const history = useHistory()
+
   const handleAddToCart = () => {
     let cart = []
     //if there exist cart in local storage, get it
@@ -57,6 +62,14 @@ const SingleProduct = ({
         payload: true,
       })
     }
+  }
+  const handleAddToWishList = (e) => {
+    e.preventDefault()
+    addToWishlist(product._id, user.token).then((res) => {
+      console.log('Add to wishlist res----->', res.data)
+      toast.success('Added to wishlist')
+      // history.push('/user/wishlist')
+    })
   }
 
   return (
@@ -137,9 +150,9 @@ const SingleProduct = ({
                 </a>
               )}
             </Tooltip>,
-            <Link to='/wishlist'>
+            <a onClick={handleAddToWishList}>
               <HeartOutlined className='text-info' /> <br /> Add to wishlist
-            </Link>,
+            </a>,
             <RatingModal
               handleStarOk={handleStarOk}
               handleStarCancel={handleStarCancel}

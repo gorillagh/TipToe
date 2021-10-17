@@ -11,6 +11,7 @@ import { Link, useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import firebase from 'firebase'
 import { Badge } from 'antd'
+import _ from 'lodash'
 
 import SearchInput from '../Forms/SearchInput'
 
@@ -110,21 +111,21 @@ function Header() {
                 <SubMenu
                   key='SubMenu'
                   icon={
-                    user.picture ? (
-                      <img
-                        alt='User pic'
-                        style={{ width: '25px', height: '25px' }}
-                        className='img img-fluid rounded mr-2'
-                        src={user.picture}
-                      />
-                    ) : (
-                      <i className='fas fa-user mr-2'></i>
-                    )
+                    // user.picture ? (
+                    //   <img
+                    //     alt='User pic'
+                    //     style={{ width: '25px', height: '25px' }}
+                    //     className='img img-fluid rounded mr-2'
+                    //     src={user.picture}
+                    //   />
+                    // ) : (
+                    <i className='fas fa-user mr-2'></i>
+                    // )
                   }
                   title={
                     user.name
-                      ? user.name.split(' ')[0]
-                      : user.email.split('@')[0]
+                      ? _.startCase(user.name.split(' ')[0])
+                      : _.startCase(user.email.split('@')[0])
                   }
                   className='float-right'
                 >

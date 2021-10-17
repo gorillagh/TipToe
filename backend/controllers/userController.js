@@ -1,3 +1,4 @@
+const uniqid = require('uniqid')
 const User = require('../models/user')
 const Product = require('../models/product')
 const Cart = require('../models/cart')
@@ -150,6 +151,88 @@ exports.getOrders = async (req, res) => {
       .sort({ createdAt: -1 })
       .exec()
     res.json(orders)
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+exports.addToWishlist = async (req, res) => {
+  const { productId } = req.body
+  const user = await User.findOneAndUpdate(
+    { email: req.user.email },
+    { $addToSet: { wishlist: productId } }
+  ).exec()
+  res.json({ ok: true })
+}
+exports.wishlist = async (req, res) => {
+  const userWishlist = await User.findOne({ email: req.user.email })
+    .select('wishlist')
+    .populate('wishlist')
+    .exec()
+  res.json(userWishlist)
+}
+exports.removeFromWishlist = async (req, res) => {
+  const { productId } = req.params
+  const result = await User.findOneAndUpdate(
+    { email: req.user.email },
+    { $pull: { wishlist: productId } }
+  ).exec()
+  res.json({ ok: true })
+}
+
+exports.createCashOrder = async (req, res) => {
+  try {
+    const { localStorageCOD, couponApplied } = await req.body
+
+    if (!localStorageCOD || localStorageCOD === 'false')
+      return res.status(400).send('Create Cash order failed')
+
+    const user = await User.findOne({ email: req.user.email }).exec()
+
+    let userCart = await Cart.findOne({ orderedBy: user._id }).exec()
+
+    let finalAmount = 0
+
+    if (couponApplied && userCart.totalAfterDiscount) {
+      finalAmount = userCart.totalAfterDiscount
+    } else {
+      finalAmount = userCart.cartTotal
+    }
+
+    //If localStorageCOD is true, create order with status of cash on delivery.
+
+    const newOrder = await new Order({
+      products: userCart.products,
+      paymentIntent: {
+        id: uniqid(),
+        amount: finalAmount,
+        // amount:
+        //   localStorageCOD === true
+        //     ? userCart.totalAfterDiscount
+        //     : userCart.cartTotal,
+        currency: 'usd',
+        status: 'Cash On Delivery',
+        created: Date.now(),
+        payment_method_types: ['cash'],
+      },
+      orderedBy: user._id,
+    }).save()
+
+    // Decrement product and increment sold
+    let bulkOption = userCart.products.map((product) => {
+      return {
+        updateOne: {
+          filter: { _id: product.product._id },
+          update: { $inc: { quantity: -product.count, sold: +product.count } },
+        },
+      }
+    })
+
+    let updated = await Product.bulkWrite(bulkOption, {})
+    // console.log('Product quantity-- and sold++----->', updated)
+
+    console.log('Cash ORDER SAVED----->>', newOrder)
+    res.json({ ok: true })
   } catch (error) {
     console.log(error)
   }

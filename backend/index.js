@@ -14,13 +14,13 @@ const port = process.env.PORT
 mongoose
   .connect(process.env.DATABASE, {
     useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
+    // useCreateIndex: true,
+    // useFindAndModify: false,
     useUnifiedTopology: true,
     keepAlive: true,
   })
   .then(() => {
-    console.log('Connection Succesful')
+    console.log('Db Connection Succesful')
   })
   .catch((error) =>
     console.log(`Connection Error! ${error.message}, Error Code: ${error.code}`)

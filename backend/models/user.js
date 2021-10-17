@@ -20,7 +20,7 @@ const userSchema = new Schema(
       default: [],
     },
     address: String,
-    // whishlist: [{ type: ObjectId, ref: "Product" }],
+    wishlist: [{ type: ObjectId, ref: 'Product' }],
   },
   { timestamps: true }
 )

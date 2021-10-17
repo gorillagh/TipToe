@@ -6,7 +6,11 @@ const ShowPaymentInfo = ({ order }) => {
       <div className='col-md-6'>
         <small>
           Ordered On:{' '}
-          {new Date(order.paymentIntent.created * 1000).toLocaleString()}
+          {order.paymentIntent.status === 'Cash On Delivery'
+            ? new Date(order.paymentIntent.created).toLocaleString()
+            : order.paymentIntent.status === 'successful'
+            ? new Date(order.paymentIntent.created).toLocaleString()
+            : new Date(order.paymentIntent.created * 1000).toLocaleString()}
         </small>
         <br />
         <small>Order Id: {order.paymentIntent.id}</small>
@@ -48,10 +52,20 @@ const ShowPaymentInfo = ({ order }) => {
         <small>
           Total Amount:{' '}
           <b>
-            {(order.paymentIntent.amount / 100).toLocaleString('en-US', {
-              style: 'currency',
-              currency: 'USD',
-            })}
+            {order.paymentIntent.status === 'Cash On Delivery'
+              ? order.paymentIntent.amount.toLocaleString('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                })
+              : order.paymentIntent.status === 'successful'
+              ? order.paymentIntent.amount.toLocaleString('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                })
+              : (order.paymentIntent.amount / 100).toLocaleString('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                })}
           </b>
         </small>
       </div>

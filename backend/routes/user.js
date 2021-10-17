@@ -14,6 +14,10 @@ const {
   applyCouponToUserCart,
   createOrder,
   getOrders,
+  addToWishlist,
+  wishlist,
+  removeFromWishlist,
+  createCashOrder,
 } = require('../controllers/userController')
 
 router.post('/user/cart', checkAuth, userCart)
@@ -25,8 +29,14 @@ router.post('/user/address', checkAuth, saveAddressToDb)
 router.post('/user/cart/coupon', checkAuth, applyCouponToUserCart)
 
 //Create Order
-router.post('/user/order', checkAuth, createOrder)
+router.post('/user/order', checkAuth, createOrder) // Stripe
+router.post('/user/cash-order', checkAuth, createCashOrder) //Cash on Delivery
 router.get('/user/orders', checkAuth, getOrders)
+
+//wish list
+router.post('/user/wishlist', checkAuth, addToWishlist)
+router.get('/user/wishlist', checkAuth, wishlist)
+router.put('/user/wishlist/:productId', checkAuth, removeFromWishlist)
 
 // router.get('/user', (req, res) => {
 //   res.json({

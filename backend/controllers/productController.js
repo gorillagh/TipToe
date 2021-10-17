@@ -221,7 +221,7 @@ exports.relatedProductsList = async (req, res) => {
       .limit(4)
       .populate('category')
       .populate('subcategories')
-      .populate('postedBy')
+      .populate('ratings', 'postedBy')
       .exec()
 
     res.json(relatedProducts)

@@ -68,9 +68,13 @@ const StripeCheckout = ({ history }) => {
       //here you get result after successful payment
       //create order and save in database for admin to proccess
       createOrder(payload, user.token).then((res) => {
+        console.log('Resss=========>', res)
         if (res.data.ok) {
           // empty cart from local storage
-          if (typeof window !== 'undefined') localStorage.removeItem('cart')
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('cart')
+            localStorage.removeItem('COD')
+          }
           // empty cart from redux
           dispatch({
             type: 'ADD_TO_CART',
@@ -81,6 +85,11 @@ const StripeCheckout = ({ history }) => {
             type: 'COUPON_APPLIED',
             payload: false,
           })
+          dispatch({
+            type: 'COD',
+            payload: false,
+          })
+
           // empty cart from database
           emptyUserCart(user.token)
         }

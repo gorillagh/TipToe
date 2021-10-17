@@ -10,6 +10,7 @@ const Cart = ({ history }) => {
   const dispatch = useDispatch()
   const { user, cart } = useSelector((state) => ({ ...state }))
   const [loading, setLoading] = useState(false)
+  const [CODLoading, setCODLoading] = useState(false)
 
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -18,9 +19,35 @@ const Cart = ({ history }) => {
 
   const saveOrderToDb = () => {
     setLoading(true)
+    dispatch({
+      type: 'COD',
+      payload: false,
+    })
+    localStorage.setItem('COD', 'false')
     saveToUserCart(cart, user.token)
       .then((res) => {
         setLoading(false)
+        if (res.data.ok) {
+          history.push('/checkout')
+        } else {
+          toast.error('Sorry a problem occured!')
+          return
+        }
+      })
+      .catch((err) => console.log('Error', err))
+  }
+
+  const saveCashOrderToDb = () => {
+    setLoading(true)
+    setCODLoading(true)
+    dispatch({
+      type: 'COD',
+      payload: true,
+    })
+    localStorage.setItem('COD', 'true')
+    saveToUserCart(cart, user.token)
+      .then((res) => {
+        setCODLoading(false)
         if (res.data.ok) {
           history.push('/checkout')
         } else {
@@ -112,19 +139,27 @@ const Cart = ({ history }) => {
               </p>
               <hr />
               {user && user.token ? (
-                <Button
-                  onClick={saveOrderToDb}
-                  className='btn btn-raised btn-success btn-block btn-sm mt-2'
-                  type='primary'
-                  loading={loading}
-                  // icon={
-                  //   !couponButtonLoading && (
-                  //     <i className='fas mr-1 fa-percentage'></i>
-                  //   )
-                  // }
-                >
-                  Checkout
-                </Button>
+                <>
+                  <Button
+                    onClick={saveOrderToDb}
+                    className='btn btn-raised btn-success btn-block btn-sm mt-2'
+                    type='primary'
+                    loading={loading}
+                    disabled={CODLoading}
+                  >
+                    Checkout
+                  </Button>
+
+                  <Button
+                    onClick={saveCashOrderToDb}
+                    className='btn btn-raised btn-dark btn-block btn-sm mt-2'
+                    type='primary'
+                    loading={CODLoading}
+                    disabled={loading}
+                  >
+                    Cash On Delivery
+                  </Button>
+                </>
               ) : (
                 <Link
                   to={{
