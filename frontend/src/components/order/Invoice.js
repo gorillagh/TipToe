@@ -44,8 +44,8 @@ const Invoice = ({ order }) => {
         </Table>
         <Text style={styles.text}>
           <Text>
-            Date:{'               '}
-            {new Date(order.paymentIntent.created * 1000).toLocaleDateString()}
+            Date:{'                '}
+            {new Date(order.paymentIntent.created).toLocaleString()}
           </Text>
           {'\n'}
           <Text>
@@ -57,7 +57,7 @@ const Invoice = ({ order }) => {
           </Text>
           {'\n'}
           <Text>
-            Total Paid: {'       '} {order.paymentIntent.amount}
+            Total Paid: {'        $'} {order.paymentIntent.amount}
           </Text>
         </Text>
         <Text style={styles.footer}> ~ Thank you for shopping with us ~ </Text>

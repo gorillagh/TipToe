@@ -54,7 +54,9 @@ const CreateCouponPage = lazy(() =>
   import('./pages/Admin/coupon/CreateCouponPage.js')
 )
 const Payment = lazy(() => import('./pages/Payment.js'))
+const PaypalPayment = lazy(() => import('./pages/PaypalPayment'))
 const OrderResult = lazy(() => import('./pages/OrderResult'))
+const PaypalOrderResult = lazy(() => import('./pages/PaypalOrderResult'))
 
 function App() {
   return (
@@ -114,7 +116,13 @@ function App() {
         <UserRoute exact path='/checkout' component={Checkout} />
         <AdminRoute exact path='/admin/coupon' component={CreateCouponPage} />
         <UserRoute exact path='/payment' component={Payment} />
+        <UserRoute exact path='/paypal-payment' component={PaypalPayment} />
         <UserRoute exact path='/order/result' component={OrderResult} />
+        <UserRoute
+          exact
+          path='/paypal/order/result/:orderId'
+          component={PaypalOrderResult}
+        />
       </Switch>
       <Footer />
     </Suspense>

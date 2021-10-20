@@ -260,7 +260,7 @@ const Checkout = ({ history }) => {
                   disabled={!products.length || !addressedSaved}
                   className='btn btn-primary btn-raised btn-success'
                 >
-                  Place Order
+                  Place Order (Cash)
                 </Button>
               ) : (
                 <Button
@@ -270,7 +270,7 @@ const Checkout = ({ history }) => {
                   disabled={!products.length || !addressedSaved}
                   className='btn btn-primary btn-raised btn-success'
                 >
-                  Place Order
+                  Place Order (Card/MoMo)
                 </Button>
               )}
             </div>
@@ -283,6 +283,19 @@ const Checkout = ({ history }) => {
                 {' '}
                 Empty Cart
               </button>
+            </div>
+          </div>
+          <div className='row'>
+            <div className='col-md-6'>
+              <Button
+                hidden={localStorageCOD === 'true'}
+                loading={loading}
+                onClick={() => history.push('/paypal-payment')}
+                disabled={!products.length || !addressedSaved}
+                className='btn btn-primary btn-raised btn-success'
+              >
+                Pay With Paypal
+              </Button>
             </div>
           </div>
         </div>

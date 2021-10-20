@@ -147,7 +147,7 @@ const Cart = ({ history }) => {
                     loading={loading}
                     disabled={CODLoading}
                   >
-                    Checkout
+                    Checkout (Cashless)
                   </Button>
 
                   <Button
