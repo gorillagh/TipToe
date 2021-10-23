@@ -41,7 +41,7 @@ exports.charge = async (req, res) => {
       amount: finalAmount,
       currency: 'GHS',
       redirect_url: 'http://localhost:3000/order/result',
-      payment_options: 'card mobilemoneyghana',
+      payment_options: 'card, mobilemoneyghana, paypal',
       meta: {
         consumer_id: user._id,
         consumer_mac: '92a3-912ba-1192a',
@@ -64,7 +64,7 @@ exports.charge = async (req, res) => {
       data: body,
 
       headers: {
-        Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET}`,
+        Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET_LIVE}`,
       },
     })
       .then((response) => {
@@ -97,7 +97,7 @@ exports.verifyTransactionAndCreateOrder = async (req, res) => {
       url: `https://api.flutterwave.com/v3/transactions/${transactionId}/verify`,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET}`,
+        Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET_LIVE}`,
       },
     }
     request(options, async (error, response) => {

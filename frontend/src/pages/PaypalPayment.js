@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Card } from 'antd'
+import { Card, Button } from 'antd'
 import { DollarOutlined, CheckOutlined } from '@ant-design/icons'
 import {
   PayPalScriptProvider,
@@ -12,10 +12,11 @@ import {
 import { createPaypalIntent } from '../serverFunctions/paypal'
 import { createOrder, emptyUserCart } from '../serverFunctions/user'
 import TipToe from '../images/favicon.ico'
+import { paystackPayment } from '../serverFunctions/paystack'
 
 const PayPalButton = window.paypal.Buttons.driver('react', { React, ReactDOM })
 
-const PaypalPayment = ({ history }) => {
+const PaypalPayment = ({ history, match }) => {
   const dispatch = useDispatch()
   const { user, coupon } = useSelector((state) => ({ ...state }))
   const [loading, setLoading] = useState(false)
@@ -27,17 +28,33 @@ const PaypalPayment = ({ history }) => {
   const [disabled, setDisabled] = useState(true)
   const [intentCreated, setIntentCreated] = useState({})
   const [orderId, setOrderId] = useState('')
+  const [url, setUrl] = useState('')
 
   const [cartTotal, setCartTotal] = useState(0)
   const [totalAfterDiscount, setTotalAfterDiscount] = useState(0)
   const [payable, setPayable] = useState(0)
 
   useEffect(() => {
-    createPaypalTransaction()
+    setLoading(true)
+    console.log(match.params.slug)
+    if (match.params.slug === 'paypal') {
+      createPaypalTransaction()
+    }
+    if (match.params.slug === 'paystack') {
+      createPaystackTransaction()
+    }
   }, [])
   const createPaypalTransaction = () => {
-    setLoading(true)
     createPaypalIntent(coupon, user.token).then((res) => {
+      setCartTotal(res.data.cartTotal)
+      setTotalAfterDiscount(res.data.totalAfterDiscount)
+      setPayable(res.data.payable)
+      setLoading(false)
+    })
+  }
+  const createPaystackTransaction = () => {
+    paystackPayment(coupon, user.token).then((res) => {
+      setUrl(res.data.transaction.data.authorization_url)
       setCartTotal(res.data.cartTotal)
       setTotalAfterDiscount(res.data.totalAfterDiscount)
       setPayable(res.data.payable)
@@ -81,7 +98,9 @@ const PaypalPayment = ({ history }) => {
   return (
     <div className='container p-5 text-center'>
       <div className='col-md-8 offset-md-2'>
-        {!succeeded ? (
+        {loading ? (
+          <h4 className='text-danger'>Loading...</h4>
+        ) : !succeeded ? (
           <div>
             <h5>Complete your purchase</h5>
             {coupon && totalAfterDiscount !== undefined ? (
@@ -93,29 +112,32 @@ const PaypalPayment = ({ history }) => {
         ) : (
           <h5>Payment Complete!</h5>
         )}
-        <Card
-          cover={
-            <img
-              className='mb-1 img-fluid rounded mx-auto d-block'
-              src={TipToe}
-              style={{
-                height: '100px',
-                width: '100px',
-                marginBottom: '-50px',
-              }}
-            />
-          }
-          actions={[
-            <>
-              <DollarOutlined className='text-info' />
-              <br /> Total: $ {cartTotal}
-            </>,
-            <>
-              <CheckOutlined className='text-info' />
-              <br /> Total Payable: $ {payable.toFixed(2)}
-            </>,
-          ]}
-        />
+        {!loading && (
+          <Card
+            cover={
+              <img
+                className='mb-1 img-fluid rounded mx-auto d-block'
+                src={TipToe}
+                style={{
+                  height: '100px',
+                  width: '100px',
+                  marginBottom: '-50px',
+                }}
+              />
+            }
+            actions={[
+              <>
+                <DollarOutlined className='text-info' />
+                <br /> Total: $ {cartTotal}
+              </>,
+              <>
+                <CheckOutlined className='text-info' />
+                <br /> Total Payable: ${' '}
+                {url ? (payable / 100).toFixed(2) : payable.toFixed(2)}
+              </>,
+            ]}
+          />
+        )}
         {/* <PayPalScriptProvider
           options={{
             'client-id':
@@ -129,7 +151,7 @@ const PaypalPayment = ({ history }) => {
             onClick={captureOrder}
           />
         </PayPalScriptProvider> */}
-        {!cancel && myComp()}
+        {!cancel && !url && !loading && myComp()}
         {cancel && (
           <div className='text-danger'>
             Order Cancelled. <a href=''>Try Again</a>
@@ -139,6 +161,14 @@ const PaypalPayment = ({ history }) => {
           <div className='text-danger'>
             An Error occured. <a href=''>Try Again</a>
           </div>
+        )}
+        {url && !loading && (
+          <Button
+            onClick={() => (window.location = url)}
+            className='btn btn-block btn-primary btn-raised'
+          >
+            Paystack Checkout
+          </Button>
         )}
       </div>
     </div>

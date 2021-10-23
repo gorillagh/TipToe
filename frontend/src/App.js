@@ -116,11 +116,15 @@ function App() {
         <UserRoute exact path='/checkout' component={Checkout} />
         <AdminRoute exact path='/admin/coupon' component={CreateCouponPage} />
         <UserRoute exact path='/payment' component={Payment} />
-        <UserRoute exact path='/paypal-payment' component={PaypalPayment} />
+        <UserRoute
+          exact
+          path='/paypal-payment/:slug'
+          component={PaypalPayment}
+        />
         <UserRoute exact path='/order/result' component={OrderResult} />
         <UserRoute
           exact
-          path='/paypal/order/result/:orderId'
+          path='/:slug/order/result/:orderId'
           component={PaypalOrderResult}
         />
       </Switch>

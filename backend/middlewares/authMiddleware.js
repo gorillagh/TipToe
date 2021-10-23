@@ -10,7 +10,6 @@ exports.checkAuth = async (req, res, next) => {
     next()
   } catch (error) {
     res.status(401).json({ error: 'Invalid or expired token' })
-    // console.log(error)
   }
 }
 

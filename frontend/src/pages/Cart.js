@@ -34,7 +34,19 @@ const Cart = ({ history }) => {
           return
         }
       })
-      .catch((err) => console.log('Error', err))
+      .catch((err) => {
+        setLoading(false)
+        // console.log('Error', typeof err)
+        if (err.message === 'Request failed with status code 401') {
+          if (
+            window.confirm(
+              'Session expired! Click "Ok" to refresh your session.'
+            )
+          ) {
+            window.location.reload()
+          }
+        }
+      })
   }
 
   const saveCashOrderToDb = () => {
@@ -55,7 +67,19 @@ const Cart = ({ history }) => {
           return
         }
       })
-      .catch((err) => console.log('Error', err))
+      .catch((err) => {
+        setLoading(false)
+        // console.log('Error--->', err.message)
+        if (err.message === 'Request failed with status code 401') {
+          if (
+            window.confirm(
+              'Session expired! Click "Ok" to refresh your session.'
+            )
+          ) {
+            window.location.reload()
+          }
+        }
+      })
   }
 
   const getTotalPrice = () => {

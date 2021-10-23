@@ -12,6 +12,8 @@ const ShowPaymentInfo = ({ order }) => {
             ? new Date(order.paymentIntent.created).toLocaleString()
             : order.paymentIntent.status === 'COMPLETED'
             ? new Date(order.paymentIntent.created).toLocaleString()
+            : order.paymentIntent.status === 'success'
+            ? new Date(order.paymentIntent.created).toLocaleString()
             : new Date(order.paymentIntent.created * 1000).toLocaleString()}
         </small>
         <br />
@@ -65,6 +67,11 @@ const ShowPaymentInfo = ({ order }) => {
                   currency: 'USD',
                 })
               : order.paymentIntent.status === 'COMPLETED'
+              ? order.paymentIntent.amount.toLocaleString('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                })
+              : order.paymentIntent.status === 'success'
               ? order.paymentIntent.amount.toLocaleString('en-US', {
                   style: 'currency',
                   currency: 'USD',

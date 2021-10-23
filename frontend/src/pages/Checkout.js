@@ -290,11 +290,24 @@ const Checkout = ({ history }) => {
               <Button
                 hidden={localStorageCOD === 'true'}
                 loading={loading}
-                onClick={() => history.push('/paypal-payment')}
+                onClick={() => history.push('/paypal-payment/paypal')}
                 disabled={!products.length || !addressedSaved}
                 className='btn btn-primary btn-raised btn-success'
               >
                 Pay With Paypal
+              </Button>
+            </div>
+          </div>
+          <div className='row'>
+            <div className='col-md-6'>
+              <Button
+                hidden={localStorageCOD === 'true'}
+                loading={loading}
+                onClick={() => history.push('/paypal-payment/paystack')}
+                disabled={!products.length || !addressedSaved}
+                className='btn btn-primary btn-raised btn-success'
+              >
+                Paystack Checkout
               </Button>
             </div>
           </div>

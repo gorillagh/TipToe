@@ -12,14 +12,17 @@ const AdminDashboard = () => {
   const { user } = useSelector((state) => ({ ...state }))
 
   useEffect(() => {
+    setLoading(true)
     loadOrders()
   }, [])
-  const loadOrders = () => setLoading(true)
-  getOrders(user.token).then((res) => {
-    console.log(JSON.stringify(res.data, null, 4))
-    setOrders(res.data)
-    setLoading(false)
-  })
+
+  const loadOrders = () => {
+    getOrders(user.token).then((res) => {
+      console.log(JSON.stringify(res.data, null, 4))
+      setOrders(res.data)
+      setLoading(false)
+    })
+  }
 
   const handleStatusChange = (orderId, orderStatus) => {
     changeStatus(orderId, orderStatus, user.token).then((res) => {

@@ -5,6 +5,7 @@ import { Card } from 'antd'
 import { DollarOutlined } from '@ant-design/icons'
 import { emptyUserCart } from '../serverFunctions/user'
 import { verifyPaypalTransactionAndCreateOrder } from '../serverFunctions/paypal'
+import { verifyTransactionAndCreateOrder } from '../serverFunctions/paystack'
 
 const PaypalOrderResult = ({ match }) => {
   const { user } = useSelector((state) => ({ ...state }))
@@ -14,8 +15,9 @@ const PaypalOrderResult = ({ match }) => {
   const [paymentSuccessful, setPaymentSuccessful] = useState(false)
 
   useEffect(() => {
+    console.log(new URLSearchParams(window.location.search).get('reference'))
     setLoading(true)
-    if (match.params.orderId) {
+    if (match.params.slug === 'paypal' && match.params.orderId !== 'ps') {
       verifyPaypalTransactionAndCreateOrder(
         match.params.orderId,
         user.token
@@ -50,7 +52,41 @@ const PaypalOrderResult = ({ match }) => {
         }
       })
     } else {
-      setLoading(false)
+      const transactionRef = new URLSearchParams(window.location.search).get(
+        'reference'
+      )
+      verifyTransactionAndCreateOrder(transactionRef, user.token).then(
+        (res) => {
+          if (res.data.ok) {
+            setOrder(res.data.newOrder)
+            // empty cart from local storage
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem('cart')
+              localStorage.removeItem('COD')
+            }
+            // empty cart from redux
+            dispatch({
+              type: 'ADD_TO_CART',
+              payload: [],
+            })
+            //reset coupon to false
+            dispatch({
+              type: 'COUPON_APPLIED',
+              payload: false,
+            })
+            dispatch({
+              type: 'COD',
+              payload: false,
+            })
+            // empty cart from database
+            emptyUserCart(user.token)
+            setPaymentSuccessful(true)
+            setLoading(false)
+          } else {
+            setLoading(false)
+          }
+        }
+      )
     }
   }, [])
 
