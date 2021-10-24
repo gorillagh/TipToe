@@ -53,7 +53,7 @@ const SideDrawer = ({ children }) => {
                 {p.images[0] ? (
                   <div className='row'>
                     <div className='col border'>
-                      <img src={p.images[0].url} style={imageStyle} />
+                      <img alt='' src={p.images[0].url} style={imageStyle} />
                     </div>
                     <div className='col border'>
                       <small>
@@ -63,7 +63,7 @@ const SideDrawer = ({ children }) => {
                   </div>
                 ) : (
                   <div className='row'>
-                    <img src={TipTopeIcon} style={imageStyle} />
+                    <img alt='' src={TipTopeIcon} style={imageStyle} />
                     <small className='text-center bg-secondary text-light'>
                       {p.title} x {p.count}
                     </small>

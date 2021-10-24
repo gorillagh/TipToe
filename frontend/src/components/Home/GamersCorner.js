@@ -14,7 +14,7 @@ const GamersCorner = () => {
     return () => {
       setCleanState({})
     }
-  }, [])
+  }, [cleanState])
 
   const loadProducts = () => {
     setLoading(true)

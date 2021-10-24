@@ -1,20 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import AdminNav from '../../components/Navbar/AdminNav'
 import { getOrders, changeStatus } from '../../serverFunctions/admin'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import Orders from '../../components/order/Orders'
-import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
 
 const AdminDashboard = () => {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(false)
+  const [cleanState, setCleanState] = useState({})
   const { user } = useSelector((state) => ({ ...state }))
 
   useEffect(() => {
     setLoading(true)
     loadOrders()
-  }, [])
+    return () => {
+      setCleanState({})
+    }
+  }, [cleanState])
 
   const loadOrders = () => {
     getOrders(user.token).then((res) => {

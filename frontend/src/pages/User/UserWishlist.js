@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { DeleteOutlined } from '@ant-design/icons'
 import { toast } from 'react-toastify'
@@ -12,10 +12,10 @@ const UserWishlist = () => {
   const { user } = useSelector((state) => ({ ...state }))
 
   useEffect(() => {
+    setLoading(true)
     loadWishlist()
   }, [])
   const loadWishlist = () => {
-    setLoading(true)
     getWishlist(user.token).then((res) => {
       setLoading(false)
       console.log(res.data)
@@ -39,19 +39,23 @@ const UserWishlist = () => {
         </div>
         <div className='col'>
           <h4>User Wishlist</h4>
-          {wishlist.map((p) => {
-            return (
-              <div key={p._id} className='alert alert-secondary'>
-                <Link to={`/product/${p.slug}`}>{p.title}</Link>
-                <span
-                  onClick={() => handleRemove(p._id)}
-                  className='btn btn-sm float-right'
-                >
-                  <DeleteOutlined className='text-danger' />
-                </span>
-              </div>
-            )
-          })}
+          {loading ? (
+            <h4 className='text-danger'>Loading...</h4>
+          ) : (
+            wishlist.map((p) => {
+              return (
+                <div key={p._id} className='alert alert-secondary'>
+                  <Link to={`/product/${p.slug}`}>{p.title}</Link>
+                  <span
+                    onClick={() => handleRemove(p._id)}
+                    className='btn btn-sm float-right'
+                  >
+                    <DeleteOutlined className='text-danger' />
+                  </span>
+                </div>
+              )
+            })
+          )}
         </div>
       </div>
     </div>

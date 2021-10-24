@@ -24,7 +24,7 @@ const TopSelling = () => {
     return () => {
       setCleanState({})
     }
-  }, [pageNumber])
+  }, [pageNumber, cleanState])
 
   useEffect(() => {
     getProductsTotalNumber().then((res) => {

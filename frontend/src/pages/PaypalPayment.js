@@ -1,33 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
-import { useSelector, useDispatch } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { Card, Button } from 'antd'
 import { DollarOutlined, CheckOutlined } from '@ant-design/icons'
-import {
-  PayPalScriptProvider,
-  PayPalButtons,
-  FUNDING,
-} from '@paypal/react-paypal-js'
+import { FUNDING } from '@paypal/react-paypal-js'
 import { createPaypalIntent } from '../serverFunctions/paypal'
-import { createOrder, emptyUserCart } from '../serverFunctions/user'
 import TipToe from '../images/favicon.ico'
 import { paystackPayment } from '../serverFunctions/paystack'
 
 const PayPalButton = window.paypal.Buttons.driver('react', { React, ReactDOM })
 
 const PaypalPayment = ({ history, match }) => {
-  const dispatch = useDispatch()
   const { user, coupon } = useSelector((state) => ({ ...state }))
   const [loading, setLoading] = useState(false)
   const [cancel, setCancel] = useState(false)
-  const [succeeded, setSucceeded] = useState(false)
-  const [hideSuccessIcon, setHideSuccessIcon] = useState(true)
   const [error, setError] = useState(null)
-  const [processing, setProcessing] = useState('')
-  const [disabled, setDisabled] = useState(true)
-  const [intentCreated, setIntentCreated] = useState({})
-  const [orderId, setOrderId] = useState('')
+
   const [url, setUrl] = useState('')
 
   const [cartTotal, setCartTotal] = useState(0)
@@ -100,7 +88,7 @@ const PaypalPayment = ({ history, match }) => {
       <div className='col-md-8 offset-md-2'>
         {loading ? (
           <h4 className='text-danger'>Loading...</h4>
-        ) : !succeeded ? (
+        ) : (
           <div>
             <h5>Complete your purchase</h5>
             {coupon && totalAfterDiscount !== undefined ? (
@@ -109,13 +97,12 @@ const PaypalPayment = ({ history, match }) => {
               <p className='alert alert-danger'>No Coupon Applied</p>
             )}
           </div>
-        ) : (
-          <h5>Payment Complete!</h5>
         )}
         {!loading && (
           <Card
             cover={
               <img
+                alt=''
                 className='mb-1 img-fluid rounded mx-auto d-block'
                 src={TipToe}
                 style={{
@@ -138,19 +125,7 @@ const PaypalPayment = ({ history, match }) => {
             ]}
           />
         )}
-        {/* <PayPalScriptProvider
-          options={{
-            'client-id':
-              'AQC2VYggyNxfGtT-_4aLrmt64x07sRGWN_ciFhM0XgrGJH0vsyMbX5Tdqt41GpAhFifv9Te-DGbd-dyl',
-          }}
-        >
-          <PayPalButtons
-            style={{ color: 'blue', shape: 'pill', label: 'pay', height: 40 }}
-            fundingSource={FUNDING.PAYPAL}
-            createOrder={createOrder()}
-            onClick={captureOrder}
-          />
-        </PayPalScriptProvider> */}
+
         {!cancel && !url && !loading && myComp()}
         {cancel && (
           <div className='text-danger'>

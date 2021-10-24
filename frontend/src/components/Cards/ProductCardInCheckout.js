@@ -19,6 +19,7 @@ const ProductCardInCheckout = ({ p, loading }) => {
         if (product._id === p._id) {
           cart[i].color = e.target.value
         }
+        return 0
       })
       localStorage.setItem('cart', JSON.stringify(cart))
       dispatch({ type: 'ADD_TO_CART', payload: cart })
@@ -43,6 +44,7 @@ const ProductCardInCheckout = ({ p, loading }) => {
         if (product._id === p._id) {
           cart[i].count = count
         }
+        return 0
       })
       localStorage.setItem('cart', JSON.stringify(cart))
       dispatch({ type: 'ADD_TO_CART', payload: cart })
@@ -142,7 +144,10 @@ const ProductCardInCheckout = ({ p, loading }) => {
         {p.shipping === 'Yes' ? (
           <>
             {/* <img src='https://img.icons8.com/color/15/000000/checked-radio-button.png' /> */}
-            <img src='https://img.icons8.com/color/15/000000/delivery--v2.png' />
+            <img
+              alt='shipping'
+              src='https://img.icons8.com/color/15/000000/delivery--v2.png'
+            />
             <br />
             <span>Delivery</span>
           </>
@@ -152,6 +157,7 @@ const ProductCardInCheckout = ({ p, loading }) => {
       </td>
       <td className='text-center'>
         <img
+          alt='delete'
           onClick={handleDeleteItem}
           className='fas fa-times text-danger btn'
           src='https://img.icons8.com/fluency/15/000000/delete-sign.png'

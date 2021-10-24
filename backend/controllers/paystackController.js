@@ -104,7 +104,7 @@ exports.verifyTransactionAndCreateOrder = async (req, res) => {
                   // created: Date.now(),
                   created: response.data.data.created_at,
                   payment_method_types: [
-                    `${response.data.data.authorization.bank} ${response.data.data.channel}`,
+                    `${response.data.data.channel} (${response.data.data.authorization.bank})`,
                   ],
                 },
                 orderedBy: user._id,

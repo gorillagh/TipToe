@@ -221,7 +221,7 @@ exports.relatedProductsList = async (req, res) => {
       .limit(4)
       .populate('category')
       .populate('subcategories')
-      .populate('ratings', 'postedBy')
+      .populate('ratings.postedBy', '_id name')
       .exec()
 
     res.json(relatedProducts)
@@ -253,7 +253,7 @@ const handleQuery = async (req, res, query) => {
   const products = await Product.find({ $text: { $search: query } })
     .populate('category', '_id name')
     .populate('subcategories', '_id name')
-    .populate('postedBy', '_id name')
+    .populate('ratings.postedBy', '_id name')
     .exec()
   res.json(products)
 }
@@ -268,11 +268,11 @@ const handlePrice = async (req, res, price) => {
     })
       .populate('category', '_id name')
       .populate('subcategories', '_id name')
-      .populate('postedBy', '_id name')
+      .populate('ratings.postedBy', '_id name')
       .exec()
     res.json(products)
   } catch (error) {
-    log(error)
+    console.log(error)
   }
 }
 
@@ -281,7 +281,7 @@ const handleCategory = async (req, res, category) => {
     const products = await Product.find({ category })
       .populate('category', '_id name')
       .populate('subcategories', '_id name')
-      .populate('postedBy', '_id name')
+      .populate('ratings.postedBy', '_id name')
       .exec()
 
     res.json(products)
@@ -309,7 +309,7 @@ const handleStar = (req, res, stars) => {
       Product.find({ _id: aggregates })
         .populate('category', '_id name')
         .populate('subcategories', '_id name')
-        .populate('postedBy', '_id name')
+        .populate('ratings.postedBy', '_id name')
         .exec((err, products) => {
           if (err) console.log('PRODUCT AGGREGATE ERROR', err)
           res.json(products)
@@ -321,7 +321,7 @@ const handleSubCategory = async (req, res, subcategory) => {
   const products = await Product.find({ subcategories: subcategory })
     .populate('category', '_id name')
     .populate('subcategories', '_id name')
-    .populate('postedBy', '_id name')
+    .populate('ratings.postedBy', '_id name')
     .exec()
 
   res.json(products)
@@ -331,7 +331,7 @@ const handleBrand = async (req, res, brand) => {
   const products = await Product.find({ brand })
     .populate('category', '_id name')
     .populate('subcategories', '_id name')
-    .populate('postedBy', '_id name')
+    .populate('ratings.postedBy', '_id name')
     .exec()
 
   res.json(products)
@@ -341,7 +341,7 @@ const handleShipping = async (req, res, shipping) => {
   const products = await Product.find({ shipping })
     .populate('category', '_id name')
     .populate('subcategories', '_id name')
-    .populate('postedBy', '_id name')
+    .populate('ratings.postedBy', '_id name')
     .exec()
 
   res.json(products)
@@ -351,7 +351,7 @@ const handleColor = async (req, res, color) => {
   const products = await Product.find({ color })
     .populate('category', '_id name')
     .populate('subcategories', '_id name')
-    .populate('postedBy', '_id name')
+    .populate('ratings.postedBy', '_id name')
     .exec()
 
   res.json(products)

@@ -31,7 +31,7 @@ function Login({ history }) {
     } else {
       if (user && user.token) history.push('/')
     }
-  }, [user, history])
+  }, [user, history, intendedPage])
 
   const roleBasedRedirect = (user) => {
     // let intendedPage = history.location.state

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import StarRatings from 'react-star-ratings'
 import _ from 'lodash'
 import { Card, Tooltip } from 'antd'
@@ -10,7 +10,6 @@ import { showAverageRating } from '../rating'
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch()
-  const { user, cart, drawer } = useSelector((state) => ({ ...state }))
 
   const { Meta } = Card
   const { title, images, description, slug, price, quantity } = product
@@ -124,11 +123,11 @@ const ProductCard = ({ product }) => {
             {quantity < 1 ? (
               <span className='text-danger'>Out of stock!</span>
             ) : (
-              <a onClick={handleAddToCart}>
+              <p onClick={handleAddToCart}>
                 <span className='text-danger'>
                   <ShoppingCartOutlined key='cart' /> <br /> Add to Cart
                 </span>
-              </a>
+              </p>
             )}
           </Tooltip>,
         ]}

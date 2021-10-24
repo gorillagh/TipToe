@@ -102,6 +102,7 @@ const PaypalOrderResult = ({ match }) => {
             cover={
               <div>
                 <img
+                  alt=''
                   style={{ width: '100px', height: '100px' }}
                   className='mb-1 img-fluid rounded mx-auto d-block'
                   src={

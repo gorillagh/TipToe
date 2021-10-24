@@ -15,7 +15,7 @@ const TopIFans = () => {
     return () => {
       setCleanState({})
     }
-  }, [])
+  }, [cleanState])
 
   const loadProducts = () => {
     setLoading(true)

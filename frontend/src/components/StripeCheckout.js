@@ -36,7 +36,7 @@ const StripeCheckout = ({ history }) => {
       setTotalAfterDiscount(res.data.totalAfterDiscount)
       setPayable(res.data.payable)
     })
-  }, [])
+  }, [coupon, user.token])
 
   const handleFlutterwavePayment = async () => {
     flutterPayment(coupon, user.token).then((res) => {
@@ -145,6 +145,7 @@ const StripeCheckout = ({ history }) => {
       )}
       <div className='text-center' hidden={hideSuccessIcon}>
         <img
+          alt=''
           style={{ width: '100px', height: '100px' }}
           className='mb-1 img-fluid rounded mx-auto d-block'
           src='https://img.icons8.com/external-kiranshastry-lineal-color-kiranshastry/200/000000/external-check-banking-and-finance-kiranshastry-lineal-color-kiranshastry.png'
@@ -156,6 +157,7 @@ const StripeCheckout = ({ history }) => {
           // hidden={!succeeded}
           cover={
             <img
+              alt=''
               hidden={!hideSuccessIcon}
               className='mb-1 img-fluid rounded mx-auto d-block'
               src={TipToe}

@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Card, Tooltip } from 'antd'
-import { Link } from 'react-router-dom'
-import { useHistory } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import _ from 'lodash'
 import { HeartOutlined, ShoppingCartOutlined } from '@ant-design/icons'
@@ -30,9 +28,8 @@ const SingleProduct = ({
 }) => {
   const { title, images, description, category, _id, quantity } = product
   const dispatch = useDispatch()
-  const { user, cart } = useSelector((state) => ({ ...state }))
+  const { user } = useSelector((state) => ({ ...state }))
   const [tooltip, setTooltip] = useState('Click to add product')
-  const history = useHistory()
 
   const handleAddToCart = () => {
     let cart = []
@@ -142,17 +139,17 @@ const SingleProduct = ({
                   <small disabled>Please check back soon.</small>
                 </div>
               ) : (
-                <a onClick={handleAddToCart}>
+                <p onClick={handleAddToCart}>
                   <span className='text-danger'>
                     <ShoppingCartOutlined className='text-success' key='cart' />{' '}
                     <br /> Add to Cart
                   </span>
-                </a>
+                </p>
               )}
             </Tooltip>,
-            <a onClick={handleAddToWishList}>
+            <p onClick={handleAddToWishList}>
               <HeartOutlined className='text-info' /> <br /> Add to wishlist
-            </a>,
+            </p>,
             <RatingModal
               handleStarOk={handleStarOk}
               handleStarCancel={handleStarCancel}

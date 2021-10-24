@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import UserNav from '../../components/Navbar/UserNav'
 import { fetchOrders } from '../../serverFunctions/user'
-import { Divider, Table, Tag, Space } from 'antd'
+import { Divider, Table } from 'antd'
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
-import { toast } from 'react-toastify'
 import ShowPaymentInfo from '../../components/Cards/ShowPaymentInfo'
 import { PDFDownloadLink } from '@react-pdf/renderer'
 import Invoice from '../../components/order/Invoice'
@@ -33,7 +32,7 @@ const UserHistory = () => {
       title: 'DATE',
       dataIndex: 'DATE',
       key: 'DATE',
-      render: (text) => <a className='text-primary'>{text}</a>,
+      render: (text) => <p className='text-primary'>{text}</p>,
     },
 
     {
@@ -69,6 +68,7 @@ const UserHistory = () => {
       AMOUNT: order.paymentIntent.amount,
       STATUS: order.orderStatus,
     })
+    return 0
   })
 
   const showOrderInTable = (order) => {

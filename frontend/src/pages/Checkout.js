@@ -15,7 +15,8 @@ import {
 import { flutterPayment } from '../serverFunctions/flutterwave'
 
 const Checkout = ({ history }) => {
-  const { user, COD, coupon } = useSelector((state) => ({ ...state }))
+  const { user, coupon } = useSelector((state) => ({ ...state }))
+  // const { COD } = useSelector((state) => ({ ...state }))
   const dispatch = useDispatch()
   const [loading, setLoading] = useState(false)
   const [saveButtonLoading, setSaveButtonLoading] = useState(false)
@@ -41,7 +42,7 @@ const Checkout = ({ history }) => {
       setProducts(res.data.products)
       setTotal(res.data.cartTotal)
     })
-  }, [])
+  }, [user.token])
 
   const saveAddress = async () => {
     setSaveButtonLoading(true)

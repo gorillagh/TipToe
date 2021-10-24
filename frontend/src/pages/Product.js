@@ -25,6 +25,7 @@ const Product = ({ match }) => {
   const { user } = useSelector((state) => ({ ...state }))
 
   useEffect(() => {
+    setPageLoading(true)
     loadSingleProduct()
   }, [slug])
 
@@ -39,7 +40,6 @@ const Product = ({ match }) => {
 
   // Load the product and its related products
   const loadSingleProduct = () => {
-    setPageLoading(true)
     getProduct(slug).then((res) => {
       setProduct(res.data)
       //load related products

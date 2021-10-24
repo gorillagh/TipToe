@@ -8,8 +8,7 @@ import { viewCategories } from '../serverFunctions/category'
 import Star from '../components/Forms/Star'
 import { viewSubCategories } from '../serverFunctions/subCategory'
 
-const { SubMenu, ItemGroup } = Menu
-const { Group } = Checkbox
+const { SubMenu } = Menu
 
 const Shop = () => {
   const [pageLoading, setPageLoading] = useState(false)
@@ -491,7 +490,6 @@ const Shop = () => {
                           className='pb-2 pl-4 pr-4'
                           value={s}
                           name='shipping'
-                          name={s}
                           onChange={handleShipping}
                           checked={s === shipping}
                         >
