@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import AdminNav from '../../components/Navbar/AdminNav'
 import { getOrders, changeStatus } from '../../serverFunctions/admin'
 import { useSelector } from 'react-redux'
@@ -8,24 +8,20 @@ import Orders from '../../components/order/Orders'
 const AdminDashboard = () => {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(false)
-  const [cleanState, setCleanState] = useState({})
   const { user } = useSelector((state) => ({ ...state }))
 
-  useEffect(() => {
-    setLoading(true)
-    loadOrders()
-    return () => {
-      setCleanState({})
-    }
-  }, [cleanState])
-
-  const loadOrders = () => {
+  const loadOrders = useCallback(() => {
     getOrders(user.token).then((res) => {
       console.log(JSON.stringify(res.data, null, 4))
       setOrders(res.data)
       setLoading(false)
     })
-  }
+  }, [user.token])
+
+  useEffect(() => {
+    setLoading(true)
+    loadOrders()
+  }, [loadOrders])
 
   const handleStatusChange = (orderId, orderStatus) => {
     changeStatus(orderId, orderStatus, user.token).then((res) => {

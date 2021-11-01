@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import ReactQuill from 'react-quill'
-import { Button } from 'antd'
+import { Button, Form, Input, InputNumber, Radio, Checkbox } from 'antd'
 import 'react-quill/dist/quill.snow.css'
 
 import {
@@ -23,6 +23,14 @@ const Checkout = ({ history }) => {
   const [products, setProducts] = useState([])
   const [total, setTotal] = useState(0)
   const [address, setAddress] = useState('')
+  const [addressType, setAddressType] = useState(1)
+  const [physicalAddress, setPhysicalAddress] = useState('')
+  const [digitalAddress, setDigitalAddress] = useState('')
+  const [savePhysicalAddress, setSavePhysicalAddress] = useState(false)
+  const [saveDigitalAddress, setSaveDigitalAddress] = useState(false)
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [riderTip, setRiderTip] = useState(0)
+  const [notes, setNotes] = useState('')
   const [coupontoApply, setCouponToApply] = useState('')
   const [couponButtonLoading, setCouponButtonLoading] = useState(false)
   const [addressedSaved, setaddressedSaved] = useState(false)
@@ -165,20 +173,48 @@ const Checkout = ({ history }) => {
     })
   }
 
+  const handleFormSubmit = () => {
+    if (!digitalAddress.length && !physicalAddress.length) {
+      toast.error('Please provide a physical or digital address')
+      return
+    }
+    if (!phoneNumber) {
+      toast.error("Please provide the receiver's telephone number")
+      return
+    }
+    if (saveDigitalAddress) {
+      setSaveButtonLoading(true)
+      console.log('Address--->', address, address.length)
+
+      if (address !== '') {
+        saveAddressToDb(digitalAddress, user.token).then((res) => {
+          if (res.data.ok) {
+            setaddressedSaved(true)
+            setSaveButtonLoading(false)
+            toast.success('digital addressed saved!')
+          }
+        })
+      } else {
+        setSaveButtonLoading(false)
+        toast.error('Please provide a valid address')
+        return
+      }
+    }
+  }
+
   return (
     <div className='container-fluid '>
       <h4 className='text-center'>Checkout</h4>
 
       <div className='row'>
         <div className='col-md-6 px-5 py-3'>
-          <h5>Please provide your delivery Address</h5>
+          <h5>Order Details</h5>
           <ReactQuill
             theme='snow'
             disabled={loading}
             value={address}
             onChange={setAddress}
           />
-
           <div className='text-right'>
             <Button
               disabled={loading}
@@ -192,7 +228,147 @@ const Checkout = ({ history }) => {
             </Button>
           </div>
 
+          <form onSubmit={handleFormSubmit}>
+            <div className='border my-3 p-3'>
+              <div className='text-center mb-3'>
+                <Radio.Group
+                  defaultValue={1}
+                  value={addressType}
+                  onChange={(e) => {
+                    setAddressType(e.target.value)
+                    if (e.target.value === 1) setSaveDigitalAddress(false)
+                    if (e.target.value === 2) setSavePhysicalAddress(false)
+
+                    console.log(e.target.value)
+                  }}
+                >
+                  <Radio name='pAddress' value={1}>
+                    Physical Address
+                  </Radio>
+                  <Radio name='dAddress' value={2}>
+                    Digital Address
+                  </Radio>
+                </Radio.Group>
+                <hr />
+              </div>
+              <div hidden={addressType === 2} className='form-group'>
+                <label>*Physical Address: </label>
+                <textarea
+                  onChange={(e) => setPhysicalAddress(e.target.value)}
+                  className='form-control'
+                  name='pAddress'
+                  id='pAddress'
+                  cols='40'
+                  rows='2'
+                  placeholder='Please your physical addresss here'
+                ></textarea>
+                <div className='text-right'>
+                  <Checkbox
+                    onChange={(e) => {
+                      setSavePhysicalAddress(!savePhysicalAddress)
+                      console.log(e.target.checked)
+                    }}
+                  >
+                    Save as my address
+                  </Checkbox>
+                </div>
+              </div>
+              <div hidden={addressType === 1} className='form-group'>
+                <label>*Digital Address: </label>
+                <input
+                  onChange={(e) => {
+                    setDigitalAddress(e.target.value)
+                  }}
+                  name='dAddress'
+                  id='dAddress'
+                  placeholder='Please enter your digital address here'
+                  type='text'
+                  placeholder='Enter your digital Address'
+                  className='form-control'
+                />
+                <div className='text-right'>
+                  <Checkbox
+                    onChange={(e) => {
+                      setSavePhysicalAddress(!saveDigitalAddress)
+                      console.log(e.target.checked)
+                    }}
+                  >
+                    Save as my address
+                  </Checkbox>
+                </div>
+              </div>
+            </div>
+            <div className='p-3'>
+              <div className='form-group'>
+                <label>*Receiver's Number:</label>
+                <input
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  type='text'
+                  placeholder='Phone Number'
+                  className='form-control'
+                />
+              </div>
+              <div className='form-group'>
+                <label>Additional Note (optional): </label>
+                <textarea
+                  onChange={(e) => setNotes(e.target.value)}
+                  className='form-control'
+                  name='address'
+                  id='address'
+                  cols='40'
+                  rows='2'
+                  placeholder='Add note'
+                ></textarea>
+              </div>
+              <div className='form-group'>
+                <label>Rider Tip(optional):</label>
+                <input
+                  onChange={(e) => setRiderTip(e.target.value)}
+                  type='number'
+                  placeholder='Any amount from GHC1'
+                  className='form-control'
+                />
+              </div>
+            </div>
+            <Button
+              disabled={loading}
+              className='btn btn-block btn-primary mt-2 btn-raised'
+              onClick={handleFormSubmit}
+              type='primary'
+              loading={saveButtonLoading}
+              icon={!saveButtonLoading && <i className='mr-1 far fa-save'></i>}
+            >
+              Save
+            </Button>
+          </form>
+
           <hr />
+        </div>
+        <div className='col-md-6 px-5 py-3'>
+          <h5>Order Summary</h5>
+          <hr />
+          <p>{products.length} Products</p>
+          {products.length ? (
+            products.map((product, i) => (
+              <div key={i}>
+                <small>
+                  {product.product.title} x {product.count} ={' '}
+                  {product.price * product.count}
+                </small>
+              </div>
+            ))
+          ) : (
+            <p>No Products</p>
+          )}
+          <hr />
+          <p>Total: GHS {total}</p>
+          {totalAfterDiscount > 0 && (
+            <p className='p-2'>
+              {discount}% Discount Applied = <strike>GHS {total}</strike> ={' '}
+              <strong>GHS {totalAfterDiscount}</strong>
+            </p>
+          )}
+
           <h5>Got Coupon?</h5>
 
           <input
@@ -225,31 +401,6 @@ const Checkout = ({ history }) => {
 
           {discountError && (
             <p className='text-center w-100 my-3 bg-danger'>Invalid Coupon!</p>
-          )}
-        </div>
-        <div className='col-md-6 px-5 py-3'>
-          <h5>Order Summary</h5>
-          <hr />
-          <p>{products.length} Products</p>
-          {products.length ? (
-            products.map((product, i) => (
-              <div key={i}>
-                <small>
-                  {product.product.title} x {product.count} ={' '}
-                  {product.price * product.count}
-                </small>
-              </div>
-            ))
-          ) : (
-            <p>No Products</p>
-          )}
-          <hr />
-          <p>Total: GHS {total}</p>
-          {totalAfterDiscount > 0 && (
-            <p className='p-2'>
-              {discount}% Discount Applied = <strike>GHS {total}</strike> ={' '}
-              <strong>GHS {totalAfterDiscount}</strong>
-            </p>
           )}
 
           <div className='row'>

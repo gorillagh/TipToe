@@ -250,12 +250,16 @@ exports.relatedProductsList = async (req, res) => {
 
 //Search Filters
 const handleQuery = async (req, res, query) => {
-  const products = await Product.find({ $text: { $search: query } })
-    .populate('category', '_id name')
-    .populate('subcategories', '_id name')
-    .populate('ratings.postedBy', '_id name')
-    .exec()
-  res.json(products)
+  try {
+    const products = await Product.find({ $text: { $search: query } })
+      .populate('category', '_id name')
+      .populate('subcategories', '_id name')
+      .populate('ratings.postedBy', '_id name')
+      .exec()
+    res.json(products)
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 const handlePrice = async (req, res, price) => {

@@ -71,10 +71,20 @@ exports.emptyUserCart = async (req, res) => {
 }
 
 exports.saveAddressToDb = async (req, res) => {
-  const userAddress = await User.findOneAndUpdate(
-    { email: req.user.email },
-    { address: req.body.address }
-  ).exec()
+  const { digitalAddress, physicalAddress } = req.body
+  let userAddress
+  if (digitalAddress) {
+    userAddress = await User.findOneAndUpdate(
+      { email: req.user.email },
+      { 'address.digitalAddress': digitalAddress }
+    ).exec()
+  }
+  if (physicalAddress) {
+    userAddress = await User.findOneAndUpdate(
+      { email: req.user.email },
+      { 'address.physicalAddress': physicalAddress }
+    ).exec()
+  }
   res.json({ userAddress, ok: true })
 }
 
@@ -202,6 +212,7 @@ exports.createCashOrder = async (req, res) => {
     //If localStorageCOD is true, create order with status of cash on delivery.
 
     const newOrder = await new Order({
+      // contact: user.contact,
       products: userCart.products,
       paymentIntent: {
         id: uniqid(),

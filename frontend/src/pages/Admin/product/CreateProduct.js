@@ -52,9 +52,6 @@ const CreateProduct = () => {
     const Categories = await viewCategories()
     // console.log(Categories.data)
     setValues({ ...values, categories: Categories.data })
-    // return () => {
-    //   setCleanState({})
-    // }
   }, [])
 
   useEffect(() => {

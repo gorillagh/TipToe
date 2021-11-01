@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { Pagination } from 'antd'
 import { CrownFilled } from '@ant-design/icons'
@@ -13,29 +13,12 @@ import LoadingSkeleton from '../Cards/LoadingSkeleton'
 const TopSelling = () => {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(false)
-  const [cleanState, setCleanState] = useState({})
   const [productsCount, setProductsCount] = useState(0)
   const [pageNumber, setPageNumber] = useState(1)
 
   const numberPerPage = 4
 
-  useEffect(() => {
-    loadProducts()
-    return () => {
-      setCleanState({})
-    }
-  }, [pageNumber, cleanState])
-
-  useEffect(() => {
-    getProductsTotalNumber().then((res) => {
-      setProductsCount(res.data)
-    })
-    return () => {
-      setCleanState({})
-    }
-  }, [])
-
-  const loadProducts = () => {
+  const loadProducts = useCallback(() => {
     setLoading(true)
     getProductList('sold', 'desc', pageNumber, numberPerPage)
       .then((res) => {
@@ -46,7 +29,18 @@ const TopSelling = () => {
         setLoading(false)
         console.log(error)
       })
-  }
+  }, [pageNumber])
+
+  useEffect(() => {
+    loadProducts()
+  }, [loadProducts])
+
+  useEffect(() => {
+    getProductsTotalNumber().then((res) => {
+      setProductsCount(res.data)
+    })
+  }, [])
+
   return (
     <div>
       <div className='container-fluid m-0'>

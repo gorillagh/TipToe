@@ -4,6 +4,7 @@ const { ObjectId } = mongoose.Schema
 
 const orderSchema = new mongoose.Schema(
   {
+    address: {},
     products: [
       {
         product: {

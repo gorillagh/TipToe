@@ -19,7 +19,7 @@ const userSchema = new Schema(
       type: Array,
       default: [],
     },
-    address: String,
+    address: {},
     wishlist: [{ type: ObjectId, ref: 'Product' }],
   },
   { timestamps: true }
